@@ -1,0 +1,29 @@
+/*清除bootstrap样式*/
+.nav>li>a{
+	padding:0;
+}
+
+.nav .open > a,
+.nav .open > a:hover,
+.nav .open > a:focus {
+	 background-color:transparent;
+ 	 border-color: transparent;
+}
+
+.breadcrumb > li + li:before {
+  padding: 0 5px;
+  color: #ccc;
+  content: ">";
+}
+
+.breadcrumb {
+  padding: 0;
+  margin-bottom: 0;
+  list-style: none;
+  background-color: transparent;
+  border-radius: 0;
+}
+
+/*.dropdown-menu{
+	position: static;
+}*/

@@ -1,0 +1,71 @@
+h3{
+	margin-top: 0;
+}
+
+div.file-input.file-input-new,
+div.file-input {
+	position: absolute;
+	top: 111px;
+	right: 135px;
+	z-index: 100;
+}
+
+#toolbar{
+	z-index: 111;
+}
+
+div.file-input>div.btn.btn-default.btn-file {
+	position: absolute;
+	top: 0;
+	right: 10px;
+}
+
+div.form-control.file-caption.kv-fileinput-caption {
+	width: 30%;
+	float: right;
+}
+
+div.kv-upload-progress {
+	position: absolute;
+	width: 25%;
+	right: 560px;
+	top: 6px;
+}
+
+div.form-control.file-caption.kv-fileinput-caption {
+	z-index: 20;
+}
+
+button.kv-file-zoom.btn.btn-xs.btn-default {
+	display: none;
+}
+
+
+div.file-input.has-error {
+	position: absolute;
+	top: 111px;
+	right: 135px;
+}
+
+div.btn.btn-default.btn-file {}
+
+@media (max-width: 768px) {
+	div.file-input.file-input-new {
+		position: absolute;
+		top: 30px;
+		right: 135px;
+	}
+	div.has-error.file-input {
+		position: absolute;
+		top: 30px;
+		right: 135px;
+	}
+	div.form-control.file-caption.kv-fileinput-caption {
+		visibility: hidden;
+	}
+	button.btn.btn-default.fileinput-remove.fileinput-remove-button {}
+}
+
+#modifyTableList .modal-body{
+	padding-left: 70px;
+}

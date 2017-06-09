@@ -1,0 +1,38 @@
+[
+	{	"collectId":"1",
+		"nDeviceId": "分组2.设备1",
+		"szVarCode": 1,
+		"nStartReg": "起始寄存器",
+		"nRegCount": "2",
+		"nFunCode": "3",
+		"nDeviceAddr": "11111a",
+		"szRegDataType": "int",
+		"bMergeBOOL": "1",
+		"bIsBlockEndBOOL": "0",
+		"fFactor": "1.0"
+	}, {
+		"collectId":"2",
+		"nDeviceId": "分组2.设备2",
+		"szVarCode": 1,
+		"nStartReg": "起始寄存器",
+		"nRegCount": "3",
+		"nFunCode": "3",
+		"nDeviceAddr": "11111a",
+		"szRegDataType": "int",
+		"bMergeBOOL": "1",
+		"bIsBlockEndBOOL": "1",
+		"fFactor": "1.0"
+	}, {
+		"collectId":"3",
+		"nDeviceId": "分组3.设备3",
+		"szVarCode": 1,
+		"nStartReg": "起始寄存器",
+		"nRegCount": "4",
+		"nFunCode": "3",
+		"nDeviceAddr": "11111a",
+		"szRegDataType": "float",
+		"bMergeBOOL": "1",
+		"bIsBlockEndBOOL": "1",
+		"fFactor": "1.0"
+	}
+]

@@ -1,0 +1,37 @@
+{
+	"data": [
+		{
+			"nId":1,
+			"szName": "名称1",
+			"szServerIP": "111.111.1.1",
+			"nServerPort": "目标端口1",
+			"nCollectInterval": "200",
+			"nCmdInterval": "100",
+			"szRemark": "备注1备注1备注1"
+		}, {
+			"nId": 2,
+			"szName": "名称2",
+			"szServerIP": "222.222.2.2",
+			"nServerPort": "目标端口2",
+			"nCollectInterval": "200",
+			"nCmdInterval": "100",
+			"szRemark": "备注2备注2备注2"
+		}, {
+			"nId": 3,
+			"szName": "名称3",
+			"szServerIP": "123.123.1.2",
+			"nServerPort": "目标端口3",
+			"nCollectInterval": "300",
+			"nCmdInterval": "300",
+			"szRemark": "备注3备注3备注3"
+		}, {
+			"nId": 4,
+			"szName": "名称4",
+			"szServerIP": "112.112.1.2",
+			"nServerPort": "目标端口4",
+			"nCollectInterval": "400",
+			"nCmdInterval": "400",
+			"szRemark": "备注4备注4备注4"
+		}
+	]
+}
