@@ -9,10 +9,16 @@ $(document).ready(function() {
 		event.stopPropagation();
 	});
 	$('.top-header>i.iconfont').click(function() { //点击关闭页面或者返回主页
-		if(history.length <= 1) {
-			window.close();
-		} else {
-			window.location.href = "../../portal.html";
-		}
+			if(history.length <= 1) {
+				window.close();
+			}else{				
+				window.parent.SN.closeChildFrame();
+			}
+	})
+		$('.modal').on('show.bs.modal', function(e) {
+		$('#wrapper').css('position', 'static');
+	})
+	$('.modal').on('hidden.bs.modal', function(e) {
+		$('#wrapper').css('position', 'fixed');
 	})
 })

@@ -15,32 +15,41 @@
 
 body {
 	position: relative;
-	/*  overflow-x: hidden;*/
+	overflow-x: hidden;
 	margin: 0;
-	font-size: 12px;
+	font-size: 14px;
 	font-family: "Helvetica Neue", "Microsoft YaHei", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", sans-serif;
 }
 
+html,
+body {
+	height: 100%;
+}
+
 /* top-header  */
+
+#app {
+	height: 100%;
+}
 
 .top-header {
 	height: 45px;
 	background-color: #006db1;
 	position: fixed;
 	width: 100%;
-	z-index: 100;
+	z-index: 1001;
 }
 
 .hamburger {
 	background: transparent;
 	border: none;
 	display: block;
-	height: 32px;
+	height: 30px;
 	margin-left: 0px;
 	position: fixed;
 	top: 7.5px;
 	left: 15px;
-	width: 32px;
+	width: 26px;
 	z-index: 999;
 }
 
@@ -108,12 +117,14 @@ body {
 /*  Wrappers  */
 
 #wrapper {
-	-moz-transition: all 0.5s ease;
-	-o-transition: all 0.5s ease;
-	-webkit-transition: all 0.5s ease;
-	transition: all 0.5s ease;
-	padding-left: 0;
-	padding-top: 45px;
+  position: fixed;
+  padding-top: 45px;
+  height: 100%;
+  width: 100%;
+  -moz-transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+  -webkit-transition: all 0.5s ease;
+  transition: all 0.5s ease;
 }
 
 #wrapper.toggled {
@@ -125,9 +136,9 @@ body {
 }
 
 #wrapper #page-content-wrapper {
-	/* position: absolute;*/
 	max-width: 100%;
 	width: auto;
+	height: 100%;
 }
 
 #sidebar-wrapper {
@@ -162,41 +173,49 @@ ul.nav .open {
 }
 
 .navbar-fixed-top {
-	top: 45px;
+	padding-top: 88px;
 }
 
 .sidebar-nav {
 	list-style: none;
 	margin: 0;
 	padding: 0;
-	position: absolute;
-	top: 0;
 	width: 220px;
-	height: 100%;
 	overflow-y: auto;
+	height: 100%;
 }
 
 
 /*webkit内核滚动条样式*/
-
-.sidebar-nav::-webkit-scrollbar-track {
-	-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-	background-color: #F5F5F5;
+::-webkit-scrollbar {
+    width: 5px;
+    height: 4px;
+    background-color: #F5F5F5;
+}
+/*定义滚动条轨道 内阴影+圆角*/
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background: #fff;
+}
+/*定义滑块 内阴影+圆角*/
+::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+    background-color: rgba(170, 170, 170, 1);
+}
+::-webkit-scrollbar-thumb:hover {
+    border-radius: 3px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+    background-color: rgba(170, 170, 170, 1);
 }
 
-.sidebar-nav::-webkit-scrollbar {
-	width: 5px;
-	background-color: #F5F5F5;
-}
-
-.sidebar-nav::-webkit-scrollbar-thumb {
-	background-color: #999;
-}
 
 .sidebar-nav>div {
 	line-height: 43px;
-	position: relative;
-	width: 100%;
+	top:45px;
+	left: 0;
+	position: absolute;
+	width: 219px;
 	border-bottom: 1px solid #ebebeb;
 	color: #4c4c4c;
 	height: 43px;
@@ -211,42 +230,263 @@ ul.nav .open {
 }
 
 .sidebar-nav ul {
+	height: 100%;
 	border-radius: 0;
 	border: none;
 	box-shadow: none;
+	overflow: auto;
 	margin: 0;
-	padding: 0;
+	padding:0;
+/*	position: absolute;*/
 	width: 219px;
 	font-size: 14px;
 	background-color: #fff;
 }
 
 .sidebar-nav>ul>li {
+	margin:0 2px 0 2px;
+	list-style: none;
 	text-align: center;
 	font-size: 14px;
-	height: 35px;
-	line-height: 35px;
+	height: 33px;
+	line-height: 33px;
 	cursor: pointer;
 }
 
-.sidebar-nav>ul>li:hover{
+.sidebar-nav>ul>li:hover {
+	background-color: #f1f1f1;
+}
+
+.libgc{
 	background-color: #f1f1f1;
 }
 
 .content-body {
 	padding: 20px 20px 0 20px;
 	height: 100%;
+	overflow: auto;
 }
 
 [v-cloak] {
-  display: none;
+	display: none;
 }
 
+#nDeviceId {
+	display: none;
+}
+
+div.row {
+	position: relative;
+}
+
+div.row .millisecond {
+	position: absolute;
+	right: 102px;
+	color: #555;
+}
+
+.pace {
+	-webkit-pointer-events: none;
+	pointer-events: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	user-select: none;
+}
+
+.pace-inactive {
+	display: none;
+}
+
+.pace .pace-progress {
+	background: #7FFF00;
+	position: fixed;
+	z-index: 10000;
+	top: 0;
+	right: 100%;
+	width: 100%;
+	height: 2px;
+}
+
+
+/*请求时的加载动画*/
+
+.undfan-loading {
+	position: absolute;
+	display: none;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	text-align: center;
+	font-size: 16px;
+	z-index: 999999;
+	opacity: 1!important;
+}
+
+.undfan-loading .spinner {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-left: -10px;
+	margin-top: -10px;
+	width: 40px;
+	height: 40px;
+	text-align: center;
+	font-size: 10px;
+}
+
+.undfan-loading .container1>div,
+.undfan-loading .container2>div,
+.undfan-loading .container3>div {
+	width: 10px;
+	height: 10px;
+	background-color: #006DB1;
+	border-radius: 100%;
+	position: absolute;
+	-webkit-animation: bouncedelay 1.2s infinite ease-in-out;
+	animation: bouncedelay 1.2s infinite ease-in-out;
+	-webkit-animation-fill-mode: both;
+	animation-fill-mode: both;
+}
+
+.undfan-loading .spinner .spinner-container {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+
+.undfan-loading .container2 {
+	-webkit-transform: rotateZ(45deg);
+	transform: rotateZ(45deg);
+}
+
+.undfan-loading .container3 {
+	-webkit-transform: rotateZ(90deg);
+	transform: rotateZ(90deg);
+}
+
+.undfan-loading .circle1 {
+	top: 0;
+	left: 0;
+}
+
+.undfan-loading .circle2 {
+	top: 0;
+	right: 0;
+}
+
+.undfan-loading .circle3 {
+	right: 0;
+	bottom: 0;
+}
+
+.undfan-loading .circle4 {
+	left: 0;
+	bottom: 0;
+}
+
+.undfan-loading .container2 .circle1 {
+	-webkit-animation-delay: -1.1s;
+	animation-delay: -1.1s;
+}
+
+.undfan-loading .container3 .circle1 {
+	-webkit-animation-delay: -1s;
+	animation-delay: -1s;
+}
+
+.undfan-loading .container1 .circle2 {
+	-webkit-animation-delay: -0.9s;
+	animation-delay: -0.9s;
+}
+
+.undfan-loading .container2 .circle2 {
+	-webkit-animation-delay: -0.8s;
+	animation-delay: -0.8s;
+}
+
+.undfan-loading .container3 .circle2 {
+	-webkit-animation-delay: -0.7s;
+	animation-delay: -0.7s;
+}
+
+.undfan-loading .container1 .circle3 {
+	-webkit-animation-delay: -0.6s;
+	animation-delay: -0.6s;
+}
+
+.undfan-loading .container2 .circle3 {
+	-webkit-animation-delay: -0.5s;
+	animation-delay: -0.5s;
+}
+
+.undfan-loading .container3 .circle3 {
+	-webkit-animation-delay: -0.4s;
+	animation-delay: -0.4s;
+}
+
+.undfan-loading .container1 .circle4 {
+	-webkit-animation-delay: -0.3s;
+	animation-delay: -0.3s;
+}
+
+.undfan-loading .container2 .circle4 {
+	-webkit-animation-delay: -0.2s;
+	animation-delay: -0.2s;
+}
+
+.undfan-loading .container3 .circle4 {
+	-webkit-animation-delay: -0.1s;
+	animation-delay: -0.1s;
+}
+
+@-webkit-keyframes bouncedelay {
+	0%,
+	80%,
+	100% {
+		-webkit-transform: scale(0.0);
+	}
+	40% {
+		-webkit-transform: scale(1.0);
+	}
+}
+
+@keyframes bouncedelay {
+	0%,
+	80%,
+	100% {
+		transform: scale(0.0);
+		-webkit-transform: scale(0.0);
+	}
+	40% {
+		transform: scale(1.0);
+		-webkit-transform: scale(1.0);
+	}
+}
+
+
 /*手机平板响应*/
+
+@media screen and (max-width: 992px) {
+	div.row .millisecond {
+		position: absolute;
+		right: 102px;
+		top: 36px;
+		color: #555;
+	}
+}
 
 @media screen and (max-width: 768px) {
 	#page-content-wrapper {
 		width: 100%!important;
 		position: absolute;
+		top: 0;
+		padding-top: 45px;
+	}
+	div.row .millisecond {
+		position: absolute;
+		right: 20%;
+		top: 36px;
+		color: #555;
 	}
 }

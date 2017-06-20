@@ -10,6 +10,9 @@ Vue.component('homepage', {
 		}
 	},
 	methods: {
+		initData:function(){
+			this.$emit('init-data');
+		},
 		checkDetail: function(index) { //点击豆腐块上的查看 获取查看的index,并传递给父组件app
 			this.$emit('get-choose-data', index);
 			this.$parent.$children[1].updateDetail();
@@ -19,7 +22,27 @@ Vue.component('homepage', {
 		},
 		deleteItem: function(index) { //删除一项豆腐块
 			this.detailIndex = index;
-			this.items.splice(this.detailIndex, 1)
+			var nIdArray=[];
+			nIdArray.push(this.items[this.detailIndex].nId);
+			this.$http.delete('/dataCollect/ModbusTcp/api/collectUnit', {body:nIdArray})
+			.then(function(res) {
+				this.items.splice(this.detailIndex, 1)
+			}, function(res) {
+				var error = res.body.errCode;
+				if(error == (-6)) {
+					toastr.warning('该采集单元已被使用，无法删除。', '警告', {
+						closeButton: true,
+						"showDuration": "300",
+						"timeOut": "3000"
+					});
+				} else {
+					toastr.warning('删除文件时发生错误。', res.status + '错误', {
+						closeButton: true,
+						"showDuration": "300",
+						"timeOut": "3000"
+					})
+				}
+			})
 		}
 	}
 })
