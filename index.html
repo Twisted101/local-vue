@@ -1,345 +1,410 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<meta charset="utf-8">
-	<meta http-equiv=X-UA-Compatible content="IE=edge">
-	<meta name=viewport content="width=device-width,initial-scale=1">
-	<link rel='shortcut icon' type='image/x-icon' href='../../public/images/logo_ico.ico' />
-	<link rel="stylesheet" href="css/bootstrap.min.css">
-	<link rel="stylesheet" href="css/bootstrap-table.min.css">
-	<link rel="stylesheet" href="css/index.css">
-	<link rel="stylesheet" href="css/homepage.css">
-	<link rel="stylesheet" href="css/detail.css">
-	<link rel="stylesheet" href="css/toastr.min.css">
-	<title>ModbusTcp</title>
-</head>
-<body>
-	<div id="app">
-		<!--添加模态框-->
-		<div class="modal fade bs-example-modal-sm" id="myModalAdd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<div>
-							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-								<span class="white">&times;</span>
-							</button>
-							<span>添加采集单元</span>
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv=X-UA-Compatible content="IE=edge">
+		<meta name=viewport content="width=device-width,initial-scale=1">
+		<link rel='shortcut icon' type='image/x-icon' href='../../public/images/logo_ico.ico' />
+		<link rel="stylesheet" href="css/bootstrap.min.css">
+		<link rel="stylesheet" href="css/bootstrap-table.min.css">
+		<link rel="stylesheet" href="css/index.css">
+		<link rel="stylesheet" href="css/homepage.css">
+		<link rel="stylesheet" href="css/detail.css">
+		<link rel="stylesheet" href="css/toastr.min.css">
+		<title>ModbusTcp</title>
+	</head>
+
+	<body>
+		<div id="app">
+			<!--确认删除采集单元的模态框-->
+			<div class="modal fade" tabindex="-1" role="dialog" id='deleteModal'>
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<h4 class="modal-title">删除确认</h4>
 						</div>
-					</div>
-					<div class="modal-body">
-						<div class="row" style="line-height: 30px;">
-							<label class="control-label col-xs-12 col-md-3 align-left">名称:</label>
-							<input type="text" style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" placeholder="请输入名称" v-model="addData.szName" v-on:keyup='addszNameKeyup' v-on:blur="addszNameBlur"/>
-							<div class="col-sm-2 col-xs-2 control-tip">
-								<a href="#" tabindex="-1" title="该项不能为空!" v-show='addszNameStar'>
-									<span>*</span>
-								</a>
-								<a href="#" tabindex="-1" v-show='addszNameIcon' v-bind:title='addszNameTitle'>
-									<i class="glyphicon glyphicon-warning-sign" style="color: red;"></i>
-								</a>
-							</div>
+						<div class="modal-body">
+							<p>确定要删除采集单元  <span>{{deleteszName}}</span>  吗？</p>
 						</div>
-						<div class="row" style="line-height: 30px;">
-							<label class="control-label col-xs-12 col-md-3 align-left">目标IP:</label>
-							<input type="text" style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" placeholder="请输入目标IP" v-model="addData.szServerIP" v-on:keyup='addszServerIPKeyup' v-on:blur="addszServerIPBlur"/>
-							<div class="col-sm-2 col-xs-2 control-tip">
-								<a href="#" tabindex="-1" title="该项不能为空!" v-show='addszServerIPStar'>
-									<span>*</span>
-								</a>
-								<a href="#" tabindex="-1" v-show='addszServerIPIcon' v-bind:title='addszServerIPTitle'>
-									<i class="glyphicon glyphicon-warning-sign" style="color: red;"></i>
-								</a>
-							</div>
-						</div>
-						<div class="row" style="line-height: 30px;">
-							<label class="control-label col-xs-12 col-md-3 align-left">目标端口:</label>
-							<input type="text" style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" placeholder="请输入目标端口" v-model="addData.nServerPort" v-on:keyup='addnServerPortKeyup' v-on:blur="addnServerPortBlur"/>
-							<div class="col-sm-2 col-xs-2 control-tip">
-								<a href="#" tabindex="-1" title="该项不能为空!" v-show='addnServerPortStar'>
-									<span>*</span>
-								</a>
-								<a href="#" tabindex="-1" v-show='addnServerPortIcon' v-bind:title='addnServerPortTitle'>
-									<i class="glyphicon glyphicon-warning-sign" style="color: red;"></i>
-								</a>
-							</div>
-						</div>
-						<div class="row" style="line-height: 30px;">
-							<label class="control-label col-xs-12 col-md-3 align-left">采集周期:</label>
-							<input type="text" style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" placeholder="请输入采集周期" v-model="addData.nCollectInterval" v-on:keyup='addnCollectIntervalKeyup' v-on:blur="addnCollectIntervalBlur"/>
-							<p class='millisecond'>毫秒</p>
-							<div class="col-sm-2 col-xs-2 control-tip">
-								<a href="#" tabindex="-1" title="该项不能为空!" v-show='addnCollectIntervalStar'>
-									<span>*</span>
-								</a>
-								<a href="#" tabindex="-1" v-show='addnCollectIntervalIcon' v-bind:title='addnCollectIntervalTitle'>
-									<i class="glyphicon glyphicon-warning-sign" style="color: red;"></i>
-								</a>
-							</div>
-						</div>
-						<div class="row" style="line-height: 30px;">
-							<label class="control-label col-xs-12 col-md-3 align-left">命令间隔:</label>
-							<input type="text" style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" placeholder="请输入命令间隔" v-model="addData.nCmdInterval" v-on:keyup='addnCmdIntervalKeyup' v-on:blur="addnCmdIntervalBlur"/>
-							<p class='millisecond'>毫秒</p>
-							<div class="col-sm-2 col-xs-2 control-tip">
-								<a href="#" tabindex="-1" title="该项不能为空!" v-show='addnCmdIntervalStar'>
-									<span>*</span>
-								</a>
-								<a href="#" tabindex="-1" v-show='addnCmdIntervalIcon' v-bind:title='addnCmdIntervalTitle'>
-									<i class="glyphicon glyphicon-warning-sign" style="color: red;"></i>
-								</a>
-							</div>
-						</div>
-						<div class="row" style="line-height: 30px;">
-							<label class="control-label col-xs-12 col-md-3 align-left">备注信息:</label>
-							<input type="text" style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" placeholder="请输入备注" v-model="addData.szRemark" v-on:keyup='addszRemarkKeyup' />
-							<div class="col-sm-2 col-xs-2 control-tip">
-								<a href="#" tabindex="-1" v-show='addszRemarkIcon' v-bind:title='addszRemarkTitle'>
-									<i class="glyphicon glyphicon-warning-sign" style="color: red;"></i>
-								</a>
-							</div>
-						</div>
-					</div>
-					<div class="modal-footer no-margin-top">
-						<button class="btn btn-sm btn-danger" data-dismiss="modal">取消</button>
-						<button class="btn btn-sm btn-success" data-dismiss="modal" v-on:click='addModalData' v-bind:disabled='addButton'>确定</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!--/添加模态框-->
-		<!-- 编辑采集单元的模态框 数据与app里的modifyData绑定-->
-		<div class="modal fade bs-example-modal-sm" id="modifyCollectList" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<div>
-							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-								<span class="white">&times;</span>
-							</button>
-							<span>编辑采集单元</span>
-						</div>
-					</div>
-					<div class="modal-body">
-						<div class="row" style="line-height: 30px;">
-							<label class="control-label col-xs-12 col-md-3 align-left">名称:</label>
-							<input type="text" style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" placeholder="请输入名称" v-model="modifyData.szName" v-on:keyup='modifyszNameKeyup' v-on:blur="modifyszNameBlur" />
-							<div class="col-sm-2 col-xs-2 control-tip">
-								<a href="#" tabindex="-1" title="该项不能为空!" v-show='modifyszNameStar'>
-									<span>*</span>
-								</a>
-								<a href="#" tabindex="-1" v-show='modifyszNameIcon' v-bind:title='modifyszNameTitle'>
-									<i class="glyphicon glyphicon-warning-sign" style="color: red;"></i>
-								</a>
-							</div>
-						</div>
-						<div class="row" style="line-height: 30px;">
-							<label class="control-label col-xs-12 col-md-3 align-left">目标IP:</label>
-							<input type="text" style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" placeholder="请输入目标IP" v-model="modifyData.szServerIP" v-on:keyup='modifyszServerIPKeyup' v-on:blur="modifyszServerIPBlur"/>
-							<div class="col-sm-2 col-xs-2 control-tip">
-								<a href="#" tabindex="-1" title="该项不能为空!" v-show='modifyszServerIPStar'>
-									<span>*</span>
-								</a>
-								<a href="#" tabindex="-1" v-show='modifyszServerIPIcon' v-bind:title='modifyszServerIPTitle'>
-									<i class="glyphicon glyphicon-warning-sign" style="color: red;"></i>
-								</a>
-							</div>
-						</div>
-						<div class="row" style="line-height: 30px;">
-							<label class="control-label col-xs-12 col-md-3 align-left">目标端口:</label>
-							<input type="text" style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" placeholder="请输入目标端口" v-model="modifyData.nServerPort" v-on:keyup='modifynServerPortKeyup' v-on:blur="modifynServerPortBlur"/>
-							<div class="col-sm-2 col-xs-2 control-tip">
-								<a href="#" tabindex="-1" title="该项不能为空!" v-show='modifynServerPortStar'>
-									<span>*</span>
-								</a>
-								<a href="#" tabindex="-1" v-show='modifynServerPortIcon' v-bind:title='modifynServerPortTitle'>
-									<i class="glyphicon glyphicon-warning-sign" style="color: red;"></i>
-								</a>
-							</div>
-						</div>
-						<div class="row" style="line-height: 30px;">
-							<label class="control-label col-xs-12 col-md-3 align-left">采集周期:</label>
-							<input type="text" style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" placeholder="请输入采集周期" v-model="modifyData.nCollectInterval" v-on:keyup='modifynCollectIntervalKeyup' v-on:blur="modifynCollectIntervalBlur"/>
-							<p class='millisecond'>毫秒</p>
-							<div class="col-sm-2 col-xs-2 control-tip">
-								<a href="#" tabindex="-1" title="该项不能为空!" v-show='modifynCollectIntervalStar'>
-									<span>*</span>
-								</a>
-								<a href="#" tabindex="-1" v-show='modifynCollectIntervalIcon' v-bind:title='modifynCollectIntervalTitle'>
-									<i class="glyphicon glyphicon-warning-sign" style="color: red;"></i>
-								</a>
-							</div>
-						</div>
-						<div class="row" style="line-height: 30px;">
-							<label class="control-label col-xs-12 col-md-3 align-left">命令间隔:</label>
-							<input type="text" style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" placeholder="请输入命令间隔" v-model="modifyData.nCmdInterval" v-on:keyup='modifynCmdIntervalKeyup' v-on:blur="modifynCmdIntervalBlur"/>
-							<p class='millisecond'>毫秒</p>
-							<div class="col-sm-2 col-xs-2 control-tip">
-								<a href="#" tabindex="-1" title="该项不能为空!" v-show='modifynCmdIntervalStar'>
-									<span>*</span>
-								</a>
-								<a href="#" tabindex="-1" v-show='modifynCmdIntervalIcon' v-bind:title='modifynCmdIntervalTitle'>
-									<i class="glyphicon glyphicon-warning-sign" style="color: red;"></i>
-								</a>
-							</div>
-						</div>
-						<div class="row" style="line-height: 30px;">
-							<label class="control-label col-xs-12 col-md-3 align-left">备注信息:</label>
-							<input type="text" style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" placeholder="请输入备注" v-model="modifyData.szRemark"/>
-						</div>
-					</div>
-					<div class="modal-footer no-margin-top">
-						<button class="btn btn-sm btn-danger" data-dismiss="modal">取消</button>
-						<button class="btn btn-sm btn-success" data-dismiss="modal" v-on:click='modifyModalData' v-bind:disabled="modifyButton">确定</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- /编辑采集单元的模态框 -->
-		<div class="top-header">
-			<button type="button" class="hamburger is-closed animated fadeInLeft" data-toggle="offcanvas">
-				<span class="hamb-top"></span>
-				<span class="hamb-middle"></span>
-				<span class="hamb-bottom"></span>
-			</button>
-			<span v-on:click="showHomepage" style="cursor:pointer">采集服务<span>ModbusTcp</span></span>
-			<i class="iconfont"></i>
-		</div>
-		<!-- /.top-header -->
-		<!-- #wrapper -->
-		<div id="wrapper" class="toggled">
-			<!-- .navbar -->
-			<nav class="navbar navbar-fixed-top" id="sidebar-wrapper" role="navigation">
-				<div class="nav sidebar-nav">
-					<div v-on:click='showHomepage'><span class="glyphicon glyphicon-king" aria-hidden="true"></span>&nbsp;&nbsp;&nbsp;采集单元</div>
-					<ul>
-						<li class='navlis' v-on:click="showDetail(index)" v-for="(ltem,index) in collectList" v-cloak>{{ltem.szName}}</li>
-					</ul>
-				</div>
-			</nav>
-			<!-- /.navbar -->
-			<div id="page-content-wrapper">
-				<div class="content-body">
-					<div class="undfan-loading">
-						<div class="spinner">
-							<div class="spinner-container container1">
-								<div class="circle1"></div>
-								<div class="circle2"></div>
-								<div class="circle3"></div>
-								<div class="circle4"></div>
-							</div>
-							<div class="spinner-container container2">
-								<div class="circle1"></div>
-								<div class="circle2"></div>
-								<div class="circle3"></div>
-								<div class="circle4"></div>
-							</div>
-							<div class="spinner-container container3">
-								<div class="circle1"></div>
-								<div class="circle2"></div>
-								<div class="circle3"></div>
-								<div class="circle4"></div>
-							</div>
-						</div>
-					</div>
-					<!-- .......内容区域....... -->
-					<homepage v-show='homepageType' v-bind:items='collectList' v-on:get-modify-data='getModifyIndex' v-on:get-choose-data='getChooseData' v-on:init-data='initData'>
-					</homepage>
-					<detail v-show='detailType' v-bind:propscollectlist='collectList' v-bind:propschoosenid='chooseNId' v-bind:propsszname='chooseSzName'>
-					</detail>
-					<!-- ....../内容区域....... -->
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-<!-- built files will be auto injected -->
-<script src='js/vue.js'></script>
-<script src='js/vue-resource.min.js'></script>
-<script src='js/jquery-3.1.1.min.js'></script>
-<script src='js/bootstrap.min.js'></script>
-<script src='js/bootstrap-table.js'></script>
-<script src='js/bootstrap-table-zh-CN.js'></script>
-<script src='js/toastr.min.js'></script>
-<script src="js/pace.min.js"></script>
-<script src='js/ajaxform.js'></script>
-<script src='js/index.js'></script>
-<!--		   豆腐块组件的html部分                           -->
-<template id="homepage">
-	<div>
-		<div class="add-button">
-			<span>采集单元列表</span>
-			<button data-toggle="modal" data-target="#myModalAdd" class="btn btn-primary" v-on:click="initData">添加采集单元</button>
-		</div>
-		<div class="row">
-			<div class="col-xs-12 col-sm-6 col-lg-4" v-for="(item,index) in items">
-				<div class="undfan-ibox">
-					<div class="undfan-ibox-title">
-						<div class="undfan-ibox-icon">
-							<span class="icon-name">{{item.szName}}</span>
-						</div>
-						<div class="undfan-ibox-tools">
-							<span class="glyphicon glyphicon-new-window undfan-ibox-into" title="查看" v-on:click="checkDetail(index)"></span>&nbsp;&nbsp;
-							<span class="glyphicon glyphicon-pencil undfan-ibox-edit" title="编辑" data-toggle="modal" data-target="#modifyCollectList" v-on:click="showModifyModal(index)"></span>&nbsp;&nbsp;
-							<span class="glyphicon glyphicon-trash undfan-ibox-trash" title="删除" data-toggle="modal" data-target="" v-on:click="deleteItem(index)"></span>
-						</div>
-					</div>
-					<div class="undfan-ibox-content">
-						<div class="row">
-							<span class="col-xs-4 control-label">目标IP:</span>
-							<span class="col-xs-7 control-label">{{item.szServerIP}}</span>
-						</div>
-						<div class="row">
-							<span class="col-xs-4 control-label">目标端口:</span>
-							<span class="col-xs-7 control-label">{{item.nServerPort}}</span>
-						</div>
-						<div class="row">
-							<span class="col-xs-4 control-label">采集周期:</span>
-							<span class="col-xs-7 control-label">{{item.nCollectInterval}}</span>
-						</div>
-						<div class="row">
-							<span class="col-xs-4 control-label">命令间隔:</span>
-							<span class="col-xs-7 control-label">{{item.nCmdInterval}}</span>
-						</div>
-						<div class="row">
-							<span class="col-xs-4 control-label">备注信息:</span>
-							<span class="col-xs-7 control-label">{{item.szRemark}}</span>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+							<button type="button" class="btn btn-success" v-on:click='confirmDelete'>确定</button>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-	</div>
-</template>
-<!--	/豆腐块的html部分 -->
-<!--   详情页表格的HTML部分-->
-<template id="detail">
-	<div>
-		<!-- 提示无法进行编辑/删除操作的模态框 -->
-		<div class="modal fade bs-example-modal-sm" id="myModalError" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<div>
-							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-								<span class="white">&times;</span>
-							</button>
-							<span>警告</span>
+			<!--/确认删除采集单元的模态框-->
+			<!--添加模态框-->
+			<div class="modal fade bs-example-modal-sm" id="myModalAdd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<div>
+								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+            <span class="white">&times;</span>
+            </button>
+								<span>添加采集单元</span>
+							</div>
+						</div>
+						<div class="modal-body">
+							<div class="row" style="line-height: 30px;">
+								<label class="control-label col-xs-12 col-md-3 align-left">名称:</label>
+								<input type="text" style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" placeholder="请输入名称" v-model="addData.szName" v-on:keyup='addszNameKeyup' v-on:blur="addszNameBlur" />
+								<div class="col-sm-2 col-xs-2 control-tip">
+									<a href="#" tabindex="-1" title="该项不能为空!" v-show='addszNameStar'>
+										<span>*</span>
+									</a>
+									<a href="#" tabindex="-1" v-show='addszNameIcon' v-bind:title='addszNameTitle'>
+										<i class="glyphicon glyphicon-warning-sign" style="color: red;"></i>
+									</a>
+								</div>
+							</div>
+							<div class="row" style="line-height: 30px;">
+								<label class="control-label col-xs-12 col-md-3 align-left">目标IP:</label>
+								<input type="text" style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" placeholder="请输入目标IP" v-model="addData.szServerIP" v-on:keyup='addszServerIPKeyup' v-on:blur="addszServerIPBlur" />
+								<div class="col-sm-2 col-xs-2 control-tip">
+									<a href="#" tabindex="-1" title="该项不能为空!" v-show='addszServerIPStar'>
+										<span>*</span>
+									</a>
+									<a href="#" tabindex="-1" v-show='addszServerIPIcon' v-bind:title='addszServerIPTitle'>
+										<i class="glyphicon glyphicon-warning-sign" style="color: red;"></i>
+									</a>
+								</div>
+							</div>
+							<div class="row" style="line-height: 30px;">
+								<label class="control-label col-xs-12 col-md-3 align-left">目标端口:</label>
+								<input type="text" style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" placeholder="请输入目标端口" v-model="addData.nServerPort" v-on:keyup='addnServerPortKeyup' v-on:blur="addnServerPortBlur" />
+								<div class="col-sm-2 col-xs-2 control-tip">
+									<a href="#" tabindex="-1" title="该项不能为空!" v-show='addnServerPortStar'>
+										<span>*</span>
+									</a>
+									<a href="#" tabindex="-1" v-show='addnServerPortIcon' v-bind:title='addnServerPortTitle'>
+										<i class="glyphicon glyphicon-warning-sign" style="color: red;"></i>
+									</a>
+								</div>
+							</div>
+							<div class="row" style="line-height: 30px;">
+								<label class="control-label col-xs-12 col-md-3 align-left">采集周期:</label>
+								<input type="text" style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" placeholder="请输入采集周期" v-model="addData.nCollectInterval" v-on:keyup='addnCollectIntervalKeyup' v-on:blur="addnCollectIntervalBlur" />
+								<p class='millisecond'>秒</p>
+								<div class="col-sm-2 col-xs-2 control-tip">
+									<a href="#" tabindex="-1" title="该项不能为空!" v-show='addnCollectIntervalStar'>
+										<span>*</span>
+									</a>
+									<a href="#" tabindex="-1" v-show='addnCollectIntervalIcon' v-bind:title='addnCollectIntervalTitle'>
+										<i class="glyphicon glyphicon-warning-sign" style="color: red;"></i>
+									</a>
+								</div>
+							</div>
+							<div class="row" style="line-height: 30px;">
+								<label class="control-label col-xs-12 col-md-3 align-left">命令超时:</label>
+								<input type="text" style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" placeholder="请输入命令超时" v-model="addData.nCmdTimeout" v-on:keyup='addnCmdTimeoutKeyup' v-on:blur="addnCmdTimeoutBlur" />
+								<p class='millisecond'>毫秒</p>
+								<div class="col-sm-2 col-xs-2 control-tip">
+									<a href="#" tabindex="-1" title="该项不能为空!" v-show='addnCmdTimeoutStar'>
+										<span>*</span>
+									</a>
+									<a href="#" tabindex="-1" v-show='addnCmdTimeoutIcon' v-bind:title='addnCmdTimeoutTitle'>
+										<i class="glyphicon glyphicon-warning-sign" style="color: red;"></i>
+									</a>
+								</div>
+							</div>
+							<div class="row" style="line-height: 30px;">
+								<label class="control-label col-xs-12 col-md-3 align-left">命令间隔:</label>
+								<input type="text" style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" placeholder="请输入命令间隔" v-model="addData.nCmdInterval" v-on:keyup='addnCmdIntervalKeyup' v-on:blur="addnCmdIntervalBlur" />
+								<p class='millisecond'>毫秒</p>
+								<div class="col-sm-2 col-xs-2 control-tip">
+									<a href="#" tabindex="-1" title="该项不能为空!" v-show='addnCmdIntervalStar'>
+										<span>*</span>
+									</a>
+									<a href="#" tabindex="-1" v-show='addnCmdIntervalIcon' v-bind:title='addnCmdIntervalTitle'>
+										<i class="glyphicon glyphicon-warning-sign" style="color: red;"></i>
+									</a>
+								</div>
+							</div>
+							<div class="row" style="line-height: 30px;">
+								<label class="control-label col-xs-12 col-md-3 align-left">备注信息:</label>
+								<input type="text" style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" placeholder="请输入备注" v-model="addData.szRemark" v-on:keyup='addszRemarkKeyup' />
+								<div class="col-sm-2 col-xs-2 control-tip">
+									<a href="#" tabindex="-1" v-show='addszRemarkIcon' v-bind:title='addszRemarkTitle'>
+										<i class="glyphicon glyphicon-warning-sign" style="color: red;"></i>
+									</a>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer no-margin-top">
+							<button class="btn btn-sm btn-danger" data-dismiss="modal">取消</button>
+							<button class="btn btn-sm btn-success" data-dismiss="modal" v-on:click='addModalData' v-bind:disabled='addButton'>确定</button>
 						</div>
 					</div>
-					<div class="modal-body">
-						<h4>请选择一项或多项数据进行编辑操作</h4>
+				</div>
+			</div>
+			<!--/添加模态框-->
+			<!-- 编辑采集单元的模态框 数据与app里的modifyData绑定-->
+			<div class="modal fade bs-example-modal-sm" id="modifyCollectList" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<div>
+								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+            <span class="white">&times;</span>
+            </button>
+								<span>编辑采集单元</span>
+							</div>
+						</div>
+						<div class="modal-body">
+							<input type="text" v-model="modifyData.nId" style="display: none;" />
+							<div class="row" style="line-height: 30px;">
+								<label class="control-label col-xs-12 col-md-3 align-left">名称:</label>
+								<input type="text" style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" placeholder="请输入名称" v-model="modifyData.szName" v-on:keyup='modifyszNameKeyup' v-on:blur="modifyszNameBlur" />
+								<div class="col-sm-2 col-xs-2 control-tip">
+									<a href="#" tabindex="-1" title="该项不能为空!" v-show='modifyszNameStar'>
+										<span>*</span>
+									</a>
+									<a href="#" tabindex="-1" v-show='modifyszNameIcon' v-bind:title='modifyszNameTitle'>
+										<i class="glyphicon glyphicon-warning-sign" style="color: red;"></i>
+									</a>
+								</div>
+							</div>
+							<div class="row" style="line-height: 30px;">
+								<label class="control-label col-xs-12 col-md-3 align-left">目标IP:</label>
+								<input type="text" style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" placeholder="请输入目标IP" v-model="modifyData.szServerIP" v-on:keyup='modifyszServerIPKeyup' v-on:blur="modifyszServerIPBlur" />
+								<div class="col-sm-2 col-xs-2 control-tip">
+									<a href="#" tabindex="-1" title="该项不能为空!" v-show='modifyszServerIPStar'>
+										<span>*</span>
+									</a>
+									<a href="#" tabindex="-1" v-show='modifyszServerIPIcon' v-bind:title='modifyszServerIPTitle'>
+										<i class="glyphicon glyphicon-warning-sign" style="color: red;"></i>
+									</a>
+								</div>
+							</div>
+							<div class="row" style="line-height: 30px;">
+								<label class="control-label col-xs-12 col-md-3 align-left">目标端口:</label>
+								<input type="text" style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" placeholder="请输入目标端口" v-model="modifyData.nServerPort" v-on:keyup='modifynServerPortKeyup' v-on:blur="modifynServerPortBlur" />
+								<div class="col-sm-2 col-xs-2 control-tip">
+									<a href="#" tabindex="-1" title="该项不能为空!" v-show='modifynServerPortStar'>
+										<span>*</span>
+									</a>
+									<a href="#" tabindex="-1" v-show='modifynServerPortIcon' v-bind:title='modifynServerPortTitle'>
+										<i class="glyphicon glyphicon-warning-sign" style="color: red;"></i>
+									</a>
+								</div>
+							</div>
+							<div class="row" style="line-height: 30px;">
+								<label class="control-label col-xs-12 col-md-3 align-left">采集周期:</label>
+								<input type="text" style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" placeholder="请输入采集周期" v-model="modifyData.nCollectInterval" v-on:keyup='modifynCollectIntervalKeyup' v-on:blur="modifynCollectIntervalBlur" />
+								<p class='millisecond'>秒</p>
+								<div class="col-sm-2 col-xs-2 control-tip">
+									<a href="#" tabindex="-1" title="该项不能为空!" v-show='modifynCollectIntervalStar'>
+										<span>*</span>
+									</a>
+									<a href="#" tabindex="-1" v-show='modifynCollectIntervalIcon' v-bind:title='modifynCollectIntervalTitle'>
+										<i class="glyphicon glyphicon-warning-sign" style="color: red;"></i>
+									</a>
+								</div>
+							</div>
+							<div class="row" style="line-height: 30px;">
+								<label class="control-label col-xs-12 col-md-3 align-left">命令超时:</label>
+								<input type="text" style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" placeholder="请输入命令超时" v-model="modifyData.nCmdTimeout" v-on:keyup='modifynCmdTimeoutKeyup' v-on:blur="modifynCmdTimeoutBlur" />
+								<p class='millisecond'>毫秒</p>
+								<div class="col-sm-2 col-xs-2 control-tip">
+									<a href="#" tabindex="-1" title="该项不能为空!" v-show='modifynCmdTimeoutStar'>
+										<span>*</span>
+									</a>
+									<a href="#" tabindex="-1" v-show='modifynCmdTimeoutIcon' v-bind:title='modifynCmdTimeoutTitle'>
+										<i class="glyphicon glyphicon-warning-sign" style="color: red;"></i>
+									</a>
+								</div>
+							</div>
+							<div class="row" style="line-height: 30px;">
+								<label class="control-label col-xs-12 col-md-3 align-left">命令间隔:</label>
+								<input type="text" style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" placeholder="请输入命令间隔" v-model="modifyData.nCmdInterval" v-on:keyup='modifynCmdIntervalKeyup' v-on:blur="modifynCmdIntervalBlur" />
+								<p class='millisecond'>毫秒</p>
+								<div class="col-sm-2 col-xs-2 control-tip">
+									<a href="#" tabindex="-1" title="该项不能为空!" v-show='modifynCmdIntervalStar'>
+										<span>*</span>
+									</a>
+									<a href="#" tabindex="-1" v-show='modifynCmdIntervalIcon' v-bind:title='modifynCmdIntervalTitle'>
+										<i class="glyphicon glyphicon-warning-sign" style="color: red;"></i>
+									</a>
+								</div>
+							</div>
+							<div class="row" style="line-height: 30px;">
+								<label class="control-label col-xs-12 col-md-3 align-left">备注信息:</label>
+								<input type="text" style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" placeholder="请输入备注" v-model="modifyData.szRemark" />
+								<div class="col-sm-2 col-xs-2 control-tip">
+									<a href="#" tabindex="-1" v-show='modifyszRemarkIcon' v-bind:title='modifyszRemarkTitle'>
+										<i class="glyphicon glyphicon-warning-sign" style="color: red;"></i>
+									</a>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer no-margin-top">
+							<button class="btn btn-sm btn-danger" data-dismiss="modal">取消</button>
+							<button class="btn btn-sm btn-success" data-dismiss="modal" v-on:click='modifyModalData' v-bind:disabled='modifyButton'>确定</button>
+						</div>
 					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-sm btn-danger" data-dismiss="modal">取消</button>
-						<button type="button" class="btn btn-sm btn-success" data-dismiss="modal">确定</button>
+				</div>
+			</div>
+			<!-- /编辑采集单元的模态框 -->
+			<div class="top-header">
+				<button type="button" class="hamburger is-closed animated fadeInLeft" data-toggle="offcanvas">
+			        <span class="hamb-top"></span>
+			        <span class="hamb-middle"></span>
+			        <span class="hamb-bottom"></span>
+			      </button>
+				<span v-on:click="showHomepage" style="cursor:pointer">采集服务<span>ModbusTcp</span></span>
+				<i class="iconfont"></i>
+			</div>
+			<!-- /.top-header -->
+			<!-- #wrapper -->
+			<div id="wrapper" class="toggled">
+				<!-- .navbar -->
+				<nav class="navbar navbar-fixed-top" id="sidebar-wrapper" role="navigation">
+					<div class="nav sidebar-nav">
+						<div v-on:click='showHomepage'><i class='iconfont collecti'></i>&nbsp;&nbsp;&nbsp;采集单元</div>
+						<ul>
+							<li class='navlis' v-on:click="showDetail(index)" v-for="(ltem,index) in collectList" v-cloak><i class='iconfont listi'></i>{{ltem.szName}}</li>
+						</ul>
+					</div>
+				</nav>
+				<!-- /.navbar -->
+				<div id="page-content-wrapper">
+					<div class="content-body">
+						<div class="undfan-loading">
+							<div class="spinner">
+								<div class="spinner-container container1">
+									<div class="circle1"></div>
+									<div class="circle2"></div>
+									<div class="circle3"></div>
+									<div class="circle4"></div>
+								</div>
+								<div class="spinner-container container2">
+									<div class="circle1"></div>
+									<div class="circle2"></div>
+									<div class="circle3"></div>
+									<div class="circle4"></div>
+								</div>
+								<div class="spinner-container container3">
+									<div class="circle1"></div>
+									<div class="circle2"></div>
+									<div class="circle3"></div>
+									<div class="circle4"></div>
+								</div>
+							</div>
+						</div>
+						<!-- .......内容区域....... -->
+						<homepage v-show='homepageType' 
+									v-bind:items='collectList' 
+									v-on:get-modify-data='getModifyIndex' 
+									v-on:get-choose-data='getChooseData' 
+									v-on:get-delete-data='getDeleteData'
+									v-on:init-data='initData'>
+						</homepage>
+						<detail v-show='detailType' v-bind:propscollectlist='collectList' v-bind:propschoosenid='chooseNId' v-bind:propsszname='chooseSzName'>
+						</detail>
+						<!-- ....../内容区域....... -->
 					</div>
 				</div>
 			</div>
 		</div>
-		<!-- /提示无法进行编辑/删除操作的模态框 -->
-		<!--编辑模态框-->
-<div class="modal fade bs-example-modal-sm" id="modifyTableList" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		</div>
+		<!-- built files will be auto injected -->
+
+		<script src='js/vue.js'></script>
+		<script src='js/vue-resource.min.js'></script>
+		<script src='js/jquery-3.1.1.min.js'></script>
+		<script src='js/toastr.min.js'></script>
+		<script src='js/bootstrap.min.js'></script>
+		<script src='js/bootstrap-table.js'></script>
+		<script src='js/bootstrap-table-zh-CN.js'></script>
+		<script src="js/pace.min.js"></script>
+		<script src='js/ajaxform.js'></script>
+		<script src='js/bootstrap-table-resizable.js'></script>
+		<script src="js/colResizable-1.5.source.js"></script>
+		<script src='js/index.js'></script>
+		<!--		   豆腐块组件的html部分                           -->
+		<template id="homepage">
+			<div>
+				<div class="add-button">
+					<span>采集单元列表</span>
+					<button data-toggle="modal" data-target="#myModalAdd" class="btn btn-primary" v-on:click='initData'>添加采集单元</button>
+				</div>
+				<div class="row">
+					<div class="col-xs-12 col-sm-6 col-lg-4" v-for="(item,index) in items">
+						<div class="undfan-ibox">
+							<div class="undfan-ibox-title">
+								<div class="undfan-ibox-icon">
+									<span class="icon-name">{{item.szName}}</span>
+								</div>
+								<div class="undfan-ibox-tools">
+									<span class="glyphicon glyphicon-new-window undfan-ibox-into" title="查看" v-on:click="checkDetail(index)"></span>&nbsp;&nbsp;
+									<span class="glyphicon glyphicon-pencil undfan-ibox-edit" title="编辑" data-toggle="modal" data-target="#modifyCollectList" v-on:click="showModifyModal(index)"></span>&nbsp;&nbsp;
+									<span class="glyphicon glyphicon-trash undfan-ibox-trash" title="删除" data-toggle="modal" data-target="#deleteModal" v-on:click="showDeleteModal(index)"></span>
+								</div>
+							</div>
+							<div class="undfan-ibox-content">
+								<div class="row">
+									<span class="col-xs-4 control-label">目标IP:</span>
+									<span class="col-xs-7 control-label">{{item.szServerIP}}</span>
+								</div>
+								<div class="row">
+									<span class="col-xs-4 control-label">目标端口:</span>
+									<span class="col-xs-7 control-label">{{item.nServerPort}}</span>
+								</div>
+								<div class="row">
+									<span class="col-xs-4 control-label">采集周期:</span>
+									<span class="col-xs-7 control-label">{{item.nCollectInterval}}  秒</span>
+								</div>
+								<div class="row">
+									<span class="col-xs-4 control-label">命令超时:</span>
+									<span class="col-xs-7 control-label">{{item.nCmdTimeout}}  毫秒</span>
+								</div>
+								<div class="row">
+									<span class="col-xs-4 control-label">命令间隔:</span>
+									<span class="col-xs-7 control-label">{{item.nCmdInterval}}  毫秒</span>
+								</div>
+								<div class="row">
+									<span class="col-xs-4 control-label">备注信息:</span>
+									<span class="col-xs-7 control-label">{{item.szRemark}}</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</template>
+		<!--	/豆腐块的html部分 -->
+		<!--   详情页表格的HTML部分-->
+		<template id="detail">
+			<div>
+				<!-- 提示无法进行编辑/删除操作的模态框 -->
+				<div class="modal fade bs-example-modal-sm" id="myModalError" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<div>
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+            <span class="white">&times;</span>
+            </button>
+									<span>警告</span>
+								</div>
+							</div>
+							<div class="modal-body">
+								<h4>请选择一项采集单元进行编辑操作</h4>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-sm btn-danger" data-dismiss="modal">取消</button>
+								<button type="button" class="btn btn-sm btn-success" data-dismiss="modal">确定</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /提示无法进行编辑/删除操作的模态框 -->
+				<!--编辑模态框-->
+				<div class="modal fade bs-example-modal-sm" id="modifyTableList" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 					<div class="modal-dialog">
 						<div class="modal-content">
 							<div class="modal-header">
@@ -357,6 +422,18 @@
 									<input type="text" style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" v-model="modifyData.deviceVariantName" disabled="true" />
 								</div>
 								<div class="row" style="line-height: 30px;">
+									<label class="control-label col-xs-12 col-md-3 align-left">设备地址:</label>
+									<input type="text" style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" placeholder="请输入设备地址" v-model="modifyData.nDeviceAddr" v-on:keyup="modifynDeviceAddrKeyup" v-on:blur="modifynDeviceAddrBlur" />
+									<div class="col-sm-2 col-xs-2 control-tip">
+										<a href="#" tabindex="-1" title="该项不能为空!" v-show="modifynDeviceAddrStar">
+											<span>*</span>
+										</a>
+										<a href="#" tabindex="-1" v-show="modifynDeviceAddrIcon" v-bind:title="modifynDeviceAddrTitle">
+											<i class="glyphicon glyphicon-warning-sign" style="color: red;"></i>
+										</a>
+									</div>
+								</div>
+								<div class="row" style="line-height: 30px;">
 									<label class="control-label col-xs-12 col-md-3 align-left">寄存器地址:</label>
 									<input type="text" style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" placeholder="请输入寄存器地址" v-model="modifyData.nStartReg" v-on:keyup="modifynStartRegKeyup" v-on:blur="modifynStartRegBlur" />
 									<div class="col-sm-2 col-xs-2 control-tip">
@@ -370,42 +447,30 @@
 								</div>
 								<div class="row" style="line-height: 30px;">
 									<label class="control-label col-xs-12 col-md-3 align-left">寄存器类型:</label>
-									<select style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" v-model="modifyData.nFunCode">
-										<option value="01">线圈状态</option>
-										<option value="02">输入状态</option>
-										<option value="03">保持寄存器</option>
-										<option value="04">输入寄存器</option>
+									<select style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" v-model="modifyData.nRegType" v-on:change='changenRegType'>
+										<option value="1">线圈状态</option>
+										<option value="2">输入状态</option>
+										<option value="3">保持寄存器</option>
+										<option value="4">输入寄存器</option>
 									</select>
 								</div>
 								<div class="row" style="line-height: 30px;">
-									<label class="control-label col-xs-12 col-md-3 align-left">设备地址:</label>
-									<input type="text" style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" placeholder="请输入设备地址" v-model="modifyData.nDeviceAddr" v-on:keyup="modifynDeviceAddrKeyup" v-on:blur="modifynDeviceAddrBlur" />
-									<div class="col-sm-2 col-xs-2 control-tip">
-										<a href="#" tabindex="-1" title="该项不能为空!" v-show="modifynDeviceAddrStar">
-											<span>*</span>
-										</a>
-										<a href="#" tabindex="-1" v-show="modifynDeviceAddrIcon" v-bind:title="modifynDeviceAddrTitle">
-											<i class="glyphicon glyphicon-warning-sign" style="color: red;"></i>
-										</a>
-									</div>
-								</div>
-								<div class="row" style="line-height: 30px;">
 									<label class="control-label col-xs-12 col-md-3 align-left">数据类型:</label>
-									<select style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" v-model="modifyData.szRegDataType">
-										<option value="uint16">16位整型</option>
-										<option value="int16">16位无符号整型</option>
-										<option value="uint32">32位整型</option>
-										<option value="int32">32位无符号整型</option>
+									<select style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" v-model="modifyData.szRegDataType" v-bind:disabled='szRegDataTypeDisabled' id='J_szRegDataType'>
+										<option value="int16">16位整型</option>
+										<option value="uint16">16位无符号整型</option>
+										<option value="int32">32位整型</option>
+										<option value="uint32">32位无符号整型</option>
 										<option value="float">单精度浮点型</option>
 										<option value="int64">64位整型</option>
 										<option value="unit64">64位无符号整型</option>
-										<option value="double">双精度整型</option>
-										<option value="bool">布尔类型</option>
+										<option value="double">双精度浮点型</option>
+										<option value="bool" v-show='hideB'>布尔类型</option>
 									</select>
 								</div>
 								<div class="row" style="line-height: 30px;">
 									<label class="control-label col-xs-12 col-md-3 align-left">系数因子:</label>
-									<input type="text" style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" placeholder="请输入系数" v-model="modifyData.fFactor" v-on:keyup="modifyfFactorKeyup" v-on:blur="modifyfFactorBlur" />
+									<input type="text" style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" placeholder="请输入系数" v-model="modifyData.fFactor" v-on:keyup="modifyfFactorKeyup" v-on:blur="modifyfFactorBlur" v-bind:disabled='fFactorDisabled' />
 									<div class="col-sm-2 col-xs-2 control-tip">
 										<a href="#" tabindex="-1" title="该项不能为空!" v-show="modifyfFactorStar">
 											<span>*</span>
@@ -415,10 +480,16 @@
 										</a>
 									</div>
 								</div>
-
 								<div class="row" style="line-height: 30px;">
-									<label class="control-label col-xs-12 col-md-3 align-left">连续读写:</label>
-									<select style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" v-model="modifyData.bMerge">
+									<label class="control-label col-xs-12 col-md-3 align-left">连续读取:</label>
+									<select style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" v-model="modifyData.bMergeRead">
+										<option value="1">是</option>
+										<option value="0">否</option>
+									</select>
+								</div>
+								<div class="row" style="line-height: 30px;">
+									<label class="control-label col-xs-12 col-md-3 align-left">连续写入:</label>
+									<select style="height: 30px;" class="col-xs-offset-1 col-xs-9 col-md-offset-0 col-md-7" v-model="modifyData.bMergeWrite">
 										<option value="1">是</option>
 										<option value="0">否</option>
 									</select>
@@ -431,9 +502,9 @@
 						</div>
 					</div>
 				</div>
-		<!--编辑模态框-->
-		<!--多项编辑模态框-->
-						<div class="modal fade bs-example-modal-sm" id="modifyTableLists" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+				<!--编辑模态框-->
+				<!--多项编辑模态框-->
+				<div class="modal fade bs-example-modal-sm" id="modifyTableLists" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 					<div class="modal-dialog">
 						<div class="modal-content">
 							<div class="modal-header">
@@ -446,40 +517,69 @@
 							</div>
 							<div class="modal-body">
 								<div class="row" style="line-height: 30px;">
-									<input type="checkbox" class="col-xs-1" v-model="nFunCodeCheck" />
+									<input type="checkbox" class="col-xs-1" v-model="nDeviceAddrCheck" v-on:click="checkmodifynDeviceAddrs"/>
+									<label class="control-label col-xs-12 col-md-3 align-left">设备地址:</label>
+									<input type="text" style="height: 30px;" class="col-xs-6" placeholder="请输入设备地址" v-model="modifyLists.nDeviceAddr" v-on:keyup="modifynDeviceAddrsKeyup" v-on:blur="modifynDeviceAddrsBlur"/>
+									<div class="col-sm-2 col-xs-2 control-tip">
+										<a href="#" tabindex="-1" title="该项不能为空!" v-show="modifynDeviceAddrsStar">
+											<span>*</span>
+										</a>
+										<a href="#" tabindex="-1" v-show="modifynDeviceAddrsIcon" v-bind:title="modifynDeviceAddrsTitle">
+											<i class="glyphicon glyphicon-warning-sign" style="color: red;"></i>
+										</a>
+									</div>
+								</div>
+								<div class="row" style="line-height: 30px;">
+									<input type="checkbox" class="col-xs-1" v-model="nRegTypeCheck" v-on:click='changenRegTypes' />
 									<label class="control-label col-xs-12 col-md-3 align-left">寄存器类型:</label>
-									<select style="height: 30px;" class="col-xs-6" v-model="modifyLists.nFunCode">
-										<option value="01">线圈状态</option>
-										<option value="02">输入状态</option>
-										<option value="03">保持寄存器</option>
-										<option value="04">输入寄存器</option>
+									<select style="height: 30px;" class="col-xs-6" v-model="modifyLists.nRegType" v-on:change='changenRegTypes'>
+										<option value="1">线圈状态</option>
+										<option value="2">输入状态</option>
+										<option value="3">保持寄存器</option>
+										<option value="4">输入寄存器</option>
 									</select>
 								</div>
 								<div class="row" style="line-height: 30px;">
-									<input type="checkbox" class="col-xs-1" v-model="szRegDataTypeCheck" />
+									<input type="checkbox" class="col-xs-1" v-model="szRegDataTypeCheck" v-bind:disabled='szRegDataTypeCheckDisabled' />
 									<label class="control-label col-xs-12 col-md-3 align-left">数据类型:</label>
-									<select style="height: 30px;" class="col-xs-6" v-model="modifyLists.szRegDataType">
-										<option value="uint16">16位整型</option>
-										<option value="int16">16位无符号整型</option>
-										<option value="uint32">32位整型</option>
-										<option value="int32">32位无符号整型</option>
+									<select style="height: 30px;" class="col-xs-6" v-model="modifyLists.szRegDataType" v-bind:disabled='szRegDataTypesDisabled' id='J_szRegDataTypes'>
+										<option value="int16">16位整型</option>
+										<option value="uint16">16位无符号整型</option>
+										<option value="int32">32位整型</option>
+										<option value="uint32">32位无符号整型</option>
 										<option value="float">单精度浮点型</option>
 										<option value="int64">64位整型</option>
 										<option value="unit64">64位无符号整型</option>
-										<option value="double">双精度整型</option>
-										<option value="bool">布尔类型</option>
+										<option value="double">双精度浮点型</option>
+										<option value="bool" v-show='hidebools'>布尔类型</option>
 									</select>
 								</div>
 								<div class="row" style="line-height: 30px;">
-									<input type="checkbox" class="col-xs-1" v-model="fFactorCheck" />
+									<input type="checkbox" class="col-xs-1" v-model="fFactorCheck" v-bind:disabled='fFactorCheckDisabled' v-on:click="checkmodifyfFactors"/>
 									<label class="control-label col-xs-12 col-md-3 align-left">系数因子:</label>
-									<input type="text" style="height: 30px;" class="col-xs-6" placeholder="请输入系数" v-model="modifyLists.fFactor" />
+									<input type="text" style="height: 30px;" class="col-xs-6" placeholder="请输入系数" v-model="modifyLists.fFactor" v-bind:disabled='fFactorsDisabled' v-on:keyup="modifyfFactorsKeyup" v-on:blur="modifyfFactorsBlur"/>
+									<div class="col-sm-2 col-xs-2 control-tip">
+										<a href="#" tabindex="-1" title="该项不能为空!" v-show="modifyfFactorsStar">
+											<span>*</span>
+										</a>
+										<a href="#" tabindex="-1" v-show="modifyfFactorsIcon" v-bind:title="modifyfFactorsTitle">
+											<i class="glyphicon glyphicon-warning-sign" style="color: red;"></i>
+										</a>
+									</div>
 								</div>
 
 								<div class="row" style="line-height: 30px;">
-									<input type="checkbox" class="col-xs-1" v-model="bMergeCheck" />
-									<label class="control-label col-xs-12 col-md-3 align-left">连续读写:</label>
-									<select style="height: 30px;" class="col-xs-6" v-model="modifyLists.bMerge">
+									<input type="checkbox" class="col-xs-1" v-model="bMergeReadCheck" />
+									<label class="control-label col-xs-12 col-md-3 align-left">连续读取:</label>
+									<select style="height: 30px;" class="col-xs-6" v-model="modifyLists.bMergeRead">
+										<option value="1">是</option>
+										<option value="0">否</option>
+									</select>
+								</div>
+								<div class="row" style="line-height: 30px;">
+									<input type="checkbox" class="col-xs-1" v-model="bMergeWriteCheck" />
+									<label class="control-label col-xs-12 col-md-3 align-left">连续写入:</label>
+									<select style="height: 30px;" class="col-xs-6" v-model="modifyLists.bMergeWrite">
 										<option value="1">是</option>
 										<option value="0">否</option>
 									</select>
@@ -487,30 +587,31 @@
 							</div>
 							<div class="modal-footer no-margin-top">
 								<button class="btn btn-sm btn-danger" data-dismiss="modal">取消</button>
-								<button class="btn btn-sm btn-success" data-dismiss="modal" v-on:click='modifyList'>确定</button>
+								<button class="btn btn-sm btn-success" data-dismiss="modal" v-on:click='modifyList' v-bind:disabled='modifyListsButton'>确定</button>
 							</div>
 						</div>
 					</div>
 				</div>
-		<!--/多项编辑模态框-->
-		<h3>采集单元-<span v-text='propsszname'></span></h3>
-		<div id="toolbar" class="btn-group">
-			<button id="btn_edit" type="button" class="btn btn-default" v-on:click='showModal'>
-				<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>&nbsp;编辑
-			</button>
-			<button id='faker' class='btn btn-default' v-on:click="chooseFile"><span class='glyphicon glyphicon-folder-open'></span>&nbsp;&nbsp;{{fileName}}</button>
-			<form method="post" action="/dataCollect/ModbusTcp/api/importVariants" enctype="multipart/form-data" id='upload'>
-				<input type="file" name="filename" class='btn btn-default' id='chooseFileUpload' v-on:change="changeFile">
-				<button type="submit" class='uploadBtn btn btn-default' v-bind:disabled="uploadButton" v-on:click='uploadFile'><span class='glyphicon glyphicon-upload'></span>&nbsp;上传</button>
-			</form>
-			<button id="download" class='btn btn-default' v-on:click="downloadFile"><span class='glyphicon glyphicon-download'></span>&nbsp;下载 </button>
-		</div>
-		<table id="table"></table>
-	</div>
-</template>
-<!--   /详情页表格的HTML部分-->
-<script type="text/javascript" src='js/collect.js'></script>
-<script type="text/javascript" src='js/detail.js'></script>
-<script type="text/javascript" src='js/app.js'></script>
-</body>
+				<!--/多项编辑模态框-->
+				<h3>采集单元-<span v-text='propsszname'></span></h3>
+				<div id="toolbar" class="btn-group">
+					<button id="btn_edit" type="button" class="btn btn-default" v-on:click='showModal'>
+      <span class="glyphicon glyphicon-pencil" aria-hidden="true" style="color:#28b779"></span>&nbsp;编辑
+    </button>
+					<button id='faker' class='btn btn-default' v-on:click="chooseFile"><span class='glyphicon glyphicon-folder-open' style='color:#286090'></span>&nbsp;&nbsp;{{fileName}}</button>
+					<form method="post" action="/dataCollect/ModbusTcp/api/importVariants" enctype="multipart/form-data" id='upload'>
+						<input type="file" name="filename" class='btn btn-default' id='chooseFileUpload' v-on:change="changeFile">
+						<button type="submit" class='uploadBtn btn btn-default' v-bind:disabled="uploadButton" v-on:click='uploadFile'><span class='glyphicon glyphicon-upload' style='color:#C09300'></span>&nbsp;导入</button>
+					</form>
+					<button id="download" class='btn btn-default' v-on:click="downloadFile"><span class='glyphicon glyphicon-download' style='color:#d9534f'></span>&nbsp;导出 </button>
+				</div>
+				<table id="table" data-resizable="true"></table>
+			</div>
+		</template>
+		<!--   /详情页表格的HTML部分-->
+		<script type="text/javascript" src='js/collect.js'></script>
+		<script type="text/javascript" src='js/detail.js'></script>
+		<script type="text/javascript" src='js/app.js'></script>
+	</body>
+
 </html>

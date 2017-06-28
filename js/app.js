@@ -3,14 +3,18 @@ var app = new Vue({
 	data: {
 		collectList: [], //采集服务数据
 		homepageType: true, //主页展示
-		chooseSzName:'',
 		detailType: false, //列表页隐藏
 		chooseIndex: 0, //点击查看采集单元详情的 index
-		chooseNId: '2222', //点击查看采集单元详情的nId
+		chooseNId: '233', //点击查看采集单元详情的nId
+		chooseSzName: '',
+		deleteIndex: 0 ,
+		deleteNId:'233',
+		deleteszName:'',
 		modifyData: {
 			"nId": "",
 			"szName": "",
 			"szServerIP": "",
+			"nCmdTimeout":"",
 			"nServerPort": "",
 			"nCollectInterval": "",
 			"nCmdInterval": "",
@@ -20,6 +24,7 @@ var app = new Vue({
 			"nId": "",
 			"szName": "",
 			"szServerIP": "",
+			"nCmdTimeout":"",
 			"nServerPort": "",
 			"nCollectInterval": "",
 			"nCmdInterval": "",
@@ -43,6 +48,9 @@ var app = new Vue({
 		addnCmdIntervalStar:true,
 		addnCmdIntervalTitle: '', //添加命令间隔 文字提示
 		addnCmdIntervalIcon: false, //添加命令间隔 警告图标
+		addnCmdTimeoutStar: true,
+		addnCmdTimeoutTitle: '',
+		addnCmdTimeoutIcon: false,
 		addszRemarkIcon:false,
 		addszRemarkTitle:'',
 		modifyszNameStar:true,
@@ -51,6 +59,9 @@ var app = new Vue({
 		modifyszServerIPStar:true,
 		modifyszServerIPTitle: '', 
 		modifyszServerIPIcon: false, 
+		modifynCmdTimeoutStar: true,
+		modifynCmdTimeoutTitle: '',
+		modifynCmdTimeoutIcon: false,
 		modifynServerPortStar:true,
 		modifynServerPortTitle: '', 
 		modifynServerPortIcon: false, 
@@ -83,6 +94,7 @@ var app = new Vue({
 				"nId": "",
 				"szName": "",
 				"szServerIP": "",
+				"nCmdTimeout":"",
 				"nServerPort": "",
 				"nCollectInterval": "",
 				"nCmdInterval": "",
@@ -108,12 +120,13 @@ var app = new Vue({
 			this.$http.post('/dataCollect/ModbusTcp/api/collectUnit', this.addData)
 			.then(function(res) {
 				$(".undfan-loading").fadeOut();
-				this.addData.nId = res.id;
-				this.collectList.push(this.addData)
+				this.addData.nId = res.body.id;
+				this.collectList.push(this.addData);
 				this.addData = {
 					"nId": "",
 					"szName": "",
 					"szServerIP": "",
+					"nCmdTimeout":"",
 					"nServerPort": "",
 					"nCollectInterval": "",
 					"nCmdInterval": "",
@@ -134,6 +147,7 @@ var app = new Vue({
 				"nId":this.collectList[this.appModifyIndex].nId,
 				"szName": this.collectList[this.appModifyIndex].szName,
 				"szServerIP": this.collectList[this.appModifyIndex].szServerIP,
+				"nCmdTimeout": this.collectList[this.appModifyIndex].nCmdTimeout,
 				"nServerPort": this.collectList[this.appModifyIndex].nServerPort,
 				"nCollectInterval": this.collectList[this.appModifyIndex].nCollectInterval,
 				"nCmdInterval": this.collectList[this.appModifyIndex].nCmdInterval,
@@ -142,8 +156,16 @@ var app = new Vue({
 		},
 		modifyModalData: function() { //点击修改模态框的确认修改
 			$(".undfan-loading").fadeIn();
-			this.$http.put('/dataCollect/ModbusTcp/api/collectUnit',this.modifyData)
-			.then(function(res) {
+			this.$http.put('/dataCollect/ModbusTcp/api/collectUnit',{
+				"nId":this.collectList[this.appModifyIndex].nId,
+				"szName": this.modifyData.szName,
+				"szServerIP": this.modifyData.szServerIP,
+				"nCmdTimeout": this.modifyData.nCmdTimeout,
+				"nServerPort": this.modifyData.nServerPort,
+				"nCollectInterval": this.modifyData.nCollectInterval,
+				"nCmdInterval": this.modifyData.nCmdInterval,
+				"szRemark": this.modifyData.szRemark
+			}).then(function(res) {
 				$(".undfan-loading").fadeOut();
 				this.collectList.splice(this.appModifyIndex, 1, this.modifyData);
 			}, function(res) {
@@ -154,6 +176,34 @@ var app = new Vue({
 					"timeOut": "3000"
 				})
 			})
+		},
+		getDeleteData:function(index){
+			this.deleteIndex = index;
+			this.deleteszName=this.collectList[this.deleteIndex].szName;
+		},
+		confirmDelete:function(){
+			var nIdArray=[];
+			nIdArray.push(this.collectList[this.deleteIndex].nId);
+			this.$http.delete('/dataCollect/ModbusTcp/api/collectUnit', {body:nIdArray})
+			.then(function(res) {
+				this.collectList.splice(this.deleteIndex, 1)
+			}, function(res) {
+				var error = res.body.errCode;
+				if(error == (-6)) {
+					toastr.warning('该采集单元已被使用，无法删除。', '警告', {
+						closeButton: true,
+						"showDuration": "300",
+						"timeOut": "3000"
+					});
+				} else {
+					toastr.warning('删除文件时发生错误。', res.status + '错误', {
+						closeButton: true,
+						"showDuration": "300",
+						"timeOut": "3000"
+					})
+				}
+			})
+			$('#deleteModal').modal('hide')
 		},
 		showDetail: function(index) { //点击左侧采集单元导航栏，切换到具体一项的采集单元列表页
 			var navLis = document.getElementsByClassName('navlis');
@@ -169,14 +219,14 @@ var app = new Vue({
 			this.$children[1].updateDetail();
 		},
 		showHomepage: function() {
-						var navLis = document.getElementsByClassName('navlis');
+			var navLis = document.getElementsByClassName('navlis');
 			for(var i = 0; i < navLis.length; i++) {
 				navLis[i].classList.remove('libgc');
 			}
 			this.homepageType = true;
 			this.detailType = false;
 		},
-		addszNameKeyup: function() {
+				addszNameKeyup: function() {
 			var pattName = /^.{0,64}$/;
 			if(!pattName.test(this.addData.szName)) {
 				this.addszNameTitle = '名称不能超过64个字符';
@@ -188,13 +238,19 @@ var app = new Vue({
 			}
 		},
 		addszNameBlur: function() {
-			if(this.addData.szName == '') {
-				this.addszNameTitle = '该项不能为空';
+			var pattName = /^.{0,64}$/;
+			if(!pattName.test(this.addData.szName)) {
+				this.addszNameTitle = '名称不能超过64个字符';
 				this.addszNameIcon = true;
 				this.addszNameStar = false;
 			} else {
 				this.addszNameIcon = false;
 				this.addszNameStar = true;
+			}
+			if(this.addData.szName == '') {
+				this.addszNameTitle = '该项不能为空';
+				this.addszNameIcon = true;
+				this.addszNameStar = false;
 			}
 		},
 		addszServerIPKeyup: function() {
@@ -209,13 +265,19 @@ var app = new Vue({
 			}
 		},
 		addszServerIPBlur: function() {
-			if(this.addData.szServerIP == '') {
-				this.addszServerIPTitle = '该项不能为空';
+			var pattName = /^(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9])\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[0-9])$/;
+			if(!pattName.test(this.addData.szServerIP)) {
+				this.addszServerIPTitle = '请输入正确的IP地址';
 				this.addszServerIPIcon = true;
 				this.addszServerIPStar = false;
 			} else {
 				this.addszServerIPIcon = false;
 				this.addszServerIPStar = true;
+			}
+			if(this.addData.szServerIP == '') {
+				this.addszServerIPTitle = '该项不能为空';
+				this.addszServerIPIcon = true;
+				this.addszServerIPStar = false;
 			}
 		},
 		addnServerPortKeyup: function() {
@@ -230,13 +292,19 @@ var app = new Vue({
 			}
 		},
 		addnServerPortBlur: function() {
-			if(this.addData.nServerPort == '') {
-				this.addnServerPortTitle = '该项不能为空';
+			var pattName = /^\d+$/;
+			if(!pattName.test(this.addData.nServerPort)) {
+				this.addnServerPortTitle = '请输入非负整数';
 				this.addnServerPortIcon = true;
 				this.addnServerPortStar = false;
 			} else {
 				this.addnServerPortIcon = false;
 				this.addnServerPortStar = true;
+			}
+			if(this.addData.nServerPort == '') {
+				this.addnServerPortTitle = '该项不能为空';
+				this.addnServerPortIcon = true;
+				this.addnServerPortStar = false;
 			}
 		},
 		addnCollectIntervalKeyup: function() {
@@ -251,13 +319,46 @@ var app = new Vue({
 			}
 		},
 		addnCollectIntervalBlur: function() {
-			if(this.addData.nCollectInterval == '') {
-				this.addnCollectIntervalTitle = '该项不能为空';
+			var pattName = /^\d+$/;
+			if(!pattName.test(this.addData.nCollectInterval)) {
+				this.addnCollectIntervalTitle = '请输入非负整数';
 				this.addnCollectIntervalIcon = true;
 				this.addnCollectIntervalStar = false;
 			} else {
 				this.addnCollectIntervalIcon = false;
 				this.addnCollectIntervalStar = true;
+			}
+			if(this.addData.nCollectInterval == '') {
+				this.addnCollectIntervalTitle = '该项不能为空';
+				this.addnCollectIntervalIcon = true;
+				this.addnCollectIntervalStar = false;
+			}
+		},
+		addnCmdTimeoutKeyup: function() {
+			var pattName = /^\d+$/;
+			if(!pattName.test(this.addData.nCmdTimeout)) {
+				this.addnCmdTimeoutTitle = '请输入非负整数';
+				this.addnCmdTimeoutIcon = true;
+				this.addnCmdTimeoutStar = false;
+			} else {
+				this.addnCmdTimeoutIcon = false;
+				this.addnCmdTimeoutStar = true;
+			}
+		},
+		addnCmdTimeoutBlur: function() {
+			var pattName = /^\d+$/;
+			if(!pattName.test(this.addData.nCmdTimeout)) {
+				this.addnCmdTimeoutTitle = '请输入非负整数';
+				this.addnCmdTimeoutIcon = true;
+				this.addnCmdTimeoutStar = false;
+			} else {
+				this.addnCmdTimeoutIcon = false;
+				this.addnCmdTimeoutStar = true;
+			}
+			if(this.addData.nCmdTimeout == '') {
+				this.addnCmdTimeoutTitle = '该项不能为空';
+				this.addnCmdTimeoutIcon = true;
+				this.addnCmdTimeoutStar = false;
 			}
 		},
 		addnCmdIntervalKeyup: function() {
@@ -272,16 +373,22 @@ var app = new Vue({
 			}
 		},
 		addnCmdIntervalBlur: function() {
-			if(this.addData.nCmdInterval == '') {
-				this.addnCmdIntervalTitle = '该项不能为空';
+			var pattName = /^\d+$/;
+			if(!pattName.test(this.addData.nCmdInterval)) {
+				this.addnCmdIntervalTitle = '请输入非负整数';
 				this.addnCmdIntervalIcon = true;
 				this.addnCmdIntervalStar = false;
 			} else {
 				this.addnCmdIntervalIcon = false;
 				this.addnCmdIntervalStar = true;
 			}
+			if(this.addData.nCmdInterval == '') {
+				this.addnCmdIntervalTitle = '该项不能为空';
+				this.addnCmdIntervalIcon = true;
+				this.addnCmdIntervalStar = false;
+			}
 		},
-		addszRemarkKeyup:function(){
+		addszRemarkKeyup: function() {
 			var pattName = /^.{0,255}$/;
 			if(!pattName.test(this.addData.szRemark)) {
 				this.addszRemarkTitle = '备注信息不能超过255个字符';
@@ -302,19 +409,25 @@ var app = new Vue({
 			}
 		},
 		modifyszNameBlur: function() {
-			if(this.modifyData.szName == '') {
-				this.modifyszNameTitle = '该项不能为空';
+			var pattName = /^.{0,64}$/;
+			if(!pattName.test(this.modifyData.szName)) {
+				this.modifyszNameTitle = '名称不能超过64个字符';
 				this.modifyszNameIcon = true;
 				this.modifyszNameStar = false;
 			} else {
 				this.modifyszNameIcon = false;
 				this.modifyszNameStar = true;
 			}
+			if(this.modifyData.szName == '') {
+				this.modifyszNameTitle = '该项不能为空';
+				this.modifyszNameIcon = true;
+				this.modifyszNameStar = false;
+			}
 		},
 		modifyszServerIPKeyup: function() {
-			var pattName = /^(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9])\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[0-9])$/;
+			var pattName = /^.{0,32}$/;
 			if(!pattName.test(this.modifyData.szServerIP)) {
-				this.modifyszServerIPTitle = '请输入正确的IP地址';
+				this.modifyszServerIPTitle = '目标IP不能超过32个字符';
 				this.modifyszServerIPIcon = true;
 				this.modifyszServerIPStar = false;
 			} else {
@@ -323,13 +436,19 @@ var app = new Vue({
 			}
 		},
 		modifyszServerIPBlur: function() {
-			if(this.modifyData.szServerIP == '') {
-				this.modifyszServerIPTitle = '该项不能为空';
+			var pattName = /^.{0,32}$/;
+			if(!pattName.test(this.modifyData.szServerIP)) {
+				this.modifyszServerIPTitle = '目标IP不能超过32个字符';
 				this.modifyszServerIPIcon = true;
 				this.modifyszServerIPStar = false;
 			} else {
 				this.modifyszServerIPIcon = false;
 				this.modifyszServerIPStar = true;
+			}
+			if(this.modifyData.szServerIP == '') {
+				this.modifyszServerIPTitle = '该项不能为空';
+				this.modifyszServerIPIcon = true;
+				this.modifyszServerIPStar = false;
 			}
 		},
 		modifynServerPortKeyup: function() {
@@ -344,13 +463,19 @@ var app = new Vue({
 			}
 		},
 		modifynServerPortBlur: function() {
-			if(this.modifyData.nServerPort == '') {
-				this.modifynServerPortTitle = '该项不能为空';
+			var pattName = /^\d+$/;
+			if(!pattName.test(this.modifyData.nServerPort)) {
+				this.modifynServerPortTitle = '请输入非负整数';
 				this.modifynServerPortIcon = true;
 				this.modifynServerPortStar = false;
 			} else {
 				this.modifynServerPortIcon = false;
 				this.modifynServerPortStar = true;
+			}
+			if(this.modifyData.nServerPort == '') {
+				this.modifynServerPortTitle = '该项不能为空';
+				this.modifynServerPortIcon = true;
+				this.modifynServerPortStar = false;
 			}
 		},
 		modifynCollectIntervalKeyup: function() {
@@ -365,13 +490,19 @@ var app = new Vue({
 			}
 		},
 		modifynCollectIntervalBlur: function() {
-			if(this.modifyData.nCollectInterval == '') {
-				this.modifynCollectIntervalTitle = '该项不能为空';
+			var pattName = /^\d+$/;
+			if(!pattName.test(this.modifyData.nCollectInterval)) {
+				this.modifynCollectIntervalTitle = '请输入非负整数';
 				this.modifynCollectIntervalIcon = true;
 				this.modifynCollectIntervalStar = false;
 			} else {
 				this.modifynCollectIntervalIcon = false;
 				this.modifynCollectIntervalStar = true;
+			}
+			if(this.modifyData.nCollectInterval == '') {
+				this.modifynCollectIntervalTitle = '该项不能为空';
+				this.modifynCollectIntervalIcon = true;
+				this.modifynCollectIntervalStar = false;
 			}
 		},
 		modifynCmdIntervalKeyup: function() {
@@ -386,13 +517,46 @@ var app = new Vue({
 			}
 		},
 		modifynCmdIntervalBlur: function() {
-			if(this.modifyData.nCmdInterval == '') {
-				this.modifynCmdIntervalTitle = '该项不能为空';
+			var pattName = /^\d+$/;
+			if(!pattName.test(this.modifyData.nCmdInterval)) {
+				this.modifynCmdIntervalTitle = '请输入非负整数';
 				this.modifynCmdIntervalIcon = true;
 				this.modifynCmdIntervalStar = false;
 			} else {
 				this.modifynCmdIntervalIcon = false;
 				this.modifynCmdIntervalStar = true;
+			}
+			if(this.modifyData.nCmdInterval == '') {
+				this.modifynCmdIntervalTitle = '该项不能为空';
+				this.modifynCmdIntervalIcon = true;
+				this.modifynCmdIntervalStar = false;
+			}
+		},
+		modifynCmdTimeoutKeyup: function() {
+			var pattName = /^\d+$/;
+			if(!pattName.test(this.modifyData.nCmdTimeout)) {
+				this.modifynCmdTimeoutTitle = '请输入非负整数';
+				this.modifynCmdTimeoutIcon = true;
+				this.modifynCmdTimeoutStar = false;
+			} else {
+				this.modifynCmdTimeoutIcon = false;
+				this.modifynCmdTimeoutStar = true;
+			}
+		},
+		modifynCmdTimeoutBlur: function() {
+			var pattName = /^\d+$/;
+			if(!pattName.test(this.modifyData.nCmdTimeout)) {
+				this.modifynCmdTimeoutTitle = '请输入非负整数';
+				this.modifynCmdTimeoutIcon = true;
+				this.modifynCmdTimeoutStar = false;
+			} else {
+				this.modifynCmdTimeoutIcon = false;
+				this.modifynCmdTimeoutStar = true;
+			}
+			if(this.modifyData.nCmdTimeout == '') {
+				this.modifynCmdTimeoutTitle = '该项不能为空';
+				this.modifynCmdTimeoutIcon = true;
+				this.modifynCmdTimeoutStar = false;
 			}
 		},
 		modifyszRemarkKeyup: function() {
@@ -412,11 +576,11 @@ var app = new Vue({
 			this.addnCollectIntervalIcon == true ||
 			this.addnCmdIntervalIcon == true ||
 			this.addszRemarkIcon == true ||
-			this.addData.szName == '' ||
-			this.addData.szServerIP == '' ||
-			this.addData.nServerPort == '' ||
-			this.addData.nCollectInterval == '' ||
-			this.addData.nCmdInterval == ''
+			this.addData.szName === '' ||
+			this.addData.szServerIP === '' ||
+			this.addData.nServerPort === '' ||
+			this.addData.nCollectInterval === '' ||
+			this.addData.nCmdInterval === ''
 			) {
 			this.addButton = true
 	} else {
@@ -428,11 +592,11 @@ var app = new Vue({
 		this.modifynCollectIntervalIcon == true ||
 		this.modifynCmdIntervalIcon == true ||
 		this.modifyszRemarkIcon == true ||
-		this.modifyData.szName == '' ||
-		this.modifyData.szServerIP == '' ||
-		this.modifyData.nServerPort == '' ||
-		this.modifyData.nCollectInterval == '' ||
-		this.modifyData.nCmdInterval == ''
+		this.modifyData.szName === '' ||
+		this.modifyData.szServerIP === '' ||
+		this.modifyData.nServerPort === '' ||
+		this.modifyData.nCollectInterval === '' ||
+		this.modifyData.nCmdInterval === ''
 		){
 		this.modifyButton = true
 } else {

@@ -26,6 +26,7 @@ body {
 	height: 100%;
 }
 
+
 /* top-header  */
 
 #app {
@@ -102,7 +103,7 @@ body {
 }
 
 .top-header>i:before {
-	content: '\e666';
+	content: '\e6c1';
 	color: #fff;
 	font-size: 24px;
 	position: absolute;
@@ -117,14 +118,14 @@ body {
 /*  Wrappers  */
 
 #wrapper {
-  position: fixed;
-  padding-top: 45px;
-  height: 100%;
-  width: 100%;
-  -moz-transition: all 0.5s ease;
-  -o-transition: all 0.5s ease;
-  -webkit-transition: all 0.5s ease;
-  transition: all 0.5s ease;
+	position: fixed;
+	padding-top: 45px;
+	height: 100%;
+	width: 100%;
+	-moz-transition: all 0.5s ease;
+	-o-transition: all 0.5s ease;
+	-webkit-transition: all 0.5s ease;
+	transition: all 0.5s ease;
 }
 
 #wrapper.toggled {
@@ -181,38 +182,44 @@ ul.nav .open {
 	margin: 0;
 	padding: 0;
 	width: 220px;
-	overflow-y: auto;
+	overflow: auto;
 	height: 100%;
 }
 
 
 /*webkit内核滚动条样式*/
 ::-webkit-scrollbar {
-    width: 5px;
-    height: 4px;
-    background-color: #F5F5F5;
-}
-/*定义滚动条轨道 内阴影+圆角*/
-::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-    background: #fff;
-}
-/*定义滑块 内阴影+圆角*/
-::-webkit-scrollbar-thumb {
-    border-radius: 3px;
-    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
-    background-color: rgba(170, 170, 170, 1);
-}
-::-webkit-scrollbar-thumb:hover {
-    border-radius: 3px;
-    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
-    background-color: rgba(170, 170, 170, 1);
+	width: 5px;
+	height: 4px;
+	background-color: #F5F5F5;
 }
 
+
+/*定义滚动条轨道 内阴影+圆角*/
+
+::-webkit-scrollbar-track {
+	-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+	background: #fff;
+}
+
+
+/*定义滑块 内阴影+圆角*/
+
+::-webkit-scrollbar-thumb {
+	border-radius: 3px;
+	-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+	background-color: rgba(170, 170, 170, 1);
+}
+
+::-webkit-scrollbar-thumb:hover {
+	border-radius: 3px;
+	-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+	background-color: rgba(170, 170, 170, 1);
+}
 
 .sidebar-nav>div {
 	line-height: 43px;
-	top:45px;
+	top: 45px;
 	left: 0;
 	position: absolute;
 	width: 219px;
@@ -234,30 +241,57 @@ ul.nav .open {
 	border-radius: 0;
 	border: none;
 	box-shadow: none;
-	overflow: auto;
+	overflow-y: auto;
 	margin: 0;
-	padding:0;
-/*	position: absolute;*/
+	padding: 0;
 	width: 219px;
 	font-size: 14px;
 	background-color: #fff;
 }
 
 .sidebar-nav>ul>li {
-	margin:0 2px 0 2px;
+	margin: 0 2px 0 2px;
 	list-style: none;
-	text-align: center;
 	font-size: 14px;
-	height: 33px;
+	/*	height: 33px;*/
 	line-height: 33px;
 	cursor: pointer;
+	text-align: left;
+	padding-left: 24px;
+	/*	width: 500px;*/
+	white-space: nowrap;
 }
 
 .sidebar-nav>ul>li:hover {
 	background-color: #f1f1f1;
 }
 
-.libgc{
+.collecti:before {
+	position: absolute;
+	top: 19px;
+	left: 30px;
+	content: '\e835';
+	color: #4c4c4c;
+	font-size: 20px;
+	padding-top: 2px;
+	z-index: 3;
+	cursor: pointer;
+	line-height: 3px;
+}
+
+.listi:before {
+	content: '\e600';
+	color: #008000;
+	font-size: 16px;
+	padding-right: 12px;
+	z-index: 3;
+	cursor: pointer;
+	font-weight: 100;
+	line-height: 3px;
+	opacity: 0.8;
+}
+
+.libgc {
 	background-color: #f1f1f1;
 }
 
@@ -464,6 +498,20 @@ div.row .millisecond {
 	}
 }
 
+#myModalAdd .modal-body>div:nth-of-type(4)>input,
+#myModalAdd .modal-body>div:nth-of-type(5)>input,
+#myModalAdd .modal-body>div:nth-of-type(6)>input,
+#modifyCollectList .modal-body>div:nth-of-type(4)>input,
+#modifyCollectList .modal-body>div:nth-of-type(5)>input,
+#modifyCollectList .modal-body>div:nth-of-type(6)>input
+{
+	padding-right: 50px;
+}
+
+#deleteModal .modal-body span{
+	color:#c9302c;
+	font-weight: 600;
+}
 
 /*手机平板响应*/
 
