@@ -156,10 +156,6 @@ body {
 	background-color: #fff;
 }
 
-#sidebar-wrapper::-webkit-scrollbar {
-	display: none;
-}
-
 
 /*Sidebar nav*/
 
@@ -188,9 +184,10 @@ ul.nav .open {
 
 
 /*webkit内核滚动条样式*/
+
 ::-webkit-scrollbar {
 	width: 5px;
-	height: 4px;
+	height: 8px;
 	background-color: #F5F5F5;
 }
 
@@ -244,7 +241,7 @@ ul.nav .open {
 	overflow-y: auto;
 	margin: 0;
 	padding: 0;
-	width: 219px;
+	width: 100%;
 	font-size: 14px;
 	background-color: #fff;
 }
@@ -258,11 +255,21 @@ ul.nav .open {
 	cursor: pointer;
 	text-align: left;
 	padding-left: 24px;
-	/*	width: 500px;*/
 	white-space: nowrap;
 }
 
+.sidebar-nav>ul>li>a {
+	color: #4c4c4c;
+	text-decoration: none;
+	display: inline-block;
+	height: 33px;
+}
+
 .sidebar-nav>ul>li:hover {
+	background-color: #f1f1f1;
+}
+
+.sidebar-nav>ul>li>a:hover {
 	background-color: #f1f1f1;
 }
 
@@ -289,10 +296,11 @@ ul.nav .open {
 	font-weight: 100;
 	line-height: 3px;
 	opacity: 0.8;
+	vertical-align: -1px;
 }
 
 .libgc {
-	background-color: #f1f1f1;
+	color: #0990d2!important;
 }
 
 .content-body {
@@ -503,15 +511,15 @@ div.row .millisecond {
 #myModalAdd .modal-body>div:nth-of-type(6)>input,
 #modifyCollectList .modal-body>div:nth-of-type(4)>input,
 #modifyCollectList .modal-body>div:nth-of-type(5)>input,
-#modifyCollectList .modal-body>div:nth-of-type(6)>input
-{
+#modifyCollectList .modal-body>div:nth-of-type(6)>input {
 	padding-right: 50px;
 }
 
-#deleteModal .modal-body span{
-	color:#c9302c;
+#deleteModal .modal-body span {
+	color: #c9302c;
 	font-weight: 600;
 }
+
 
 /*手机平板响应*/
 

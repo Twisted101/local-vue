@@ -23,7 +23,6 @@ h3 {
 #upload {
 	display: inline-block;
 	z-index: 99;
-
 }
 
 #upload input {
@@ -70,4 +69,11 @@ h3 {
 #modifyTableLists div.row input.col-xs-1 {
 	height: 22px;
 	width: 16px;
+}
+
+.fixed-table-pagination{
+	height: 0;
+}
+.fixed-table-body{
+	overflow: auto;
 }

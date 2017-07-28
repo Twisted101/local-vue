@@ -3,9 +3,8 @@ Vue.component('detail', {
 	template: '#detail',
 	data: function() {
 		return {
-			tableList: [],
 			nowIndex: 0,
-			fileName:'选择文件上传',
+			fileName: '选择文件上传',
 			dblnowIndex: 0,
 			modifyData: {
 				"deviceVariantName": "",
@@ -13,56 +12,57 @@ Vue.component('detail', {
 				"nStartReg": "",
 				"nRegType": "",
 				"nDeviceAddr": "",
-				"szRegDataType": "int",
+				"szRegDataType": "int16",
 				"bMergeRead": "",
 				"bMergeWrite": "",
 				"fFactor": ""
 			},
 			modifyLists: {
 				"nDeviceAddr": "",
-				"deviceVariantId": '',
+				"deviceVariantId": "",
 				"nRegType": "",
 				"fFactor": "",
-				"szRegDataType": "int",
+				"szRegDataType": "int16",
 				"bMergeRead": "1",
 				"bMergeWrite": "1"
 			},
 			"hideB": true,
-			"hidebools": true,
 			"fFactorDisabled": false,
 			"fFactorsDisabled": false,
+			"hidebools": true,
 			"nDeviceAddrCheck": false,
 			"nRegTypeCheck": false,
 			"fFactorCheck": false,
 			"szRegDataTypeCheck": false,
 			"bMergeReadCheck": false,
-			"bMergeWriteCheck": false,			
-			"modifynStartRegStar":true,
-			"modifynStartRegIcon":false,
-			"modifynStartRegTitle":'',
-			"modifynDeviceAddrStar":true,
-			"modifynDeviceAddrIcon":false,
-			"modifynDeviceAddrTitle":'',
-			"modifyfFactorStar":true,
-			"modifyfFactorIcon":false,
-			"modifyfFactorTitle":'',
+			"bMergeWriteCheck": false,
+			"modifynStartRegStar": true,
+			"modifynStartRegIcon": false,
+			"modifynStartRegTitle": '',
+			"modifynDeviceAddrStar": true,
+			"modifynDeviceAddrIcon": false,
+			"modifynDeviceAddrTitle": '',
+			"modifyfFactorStar": true,
+			"modifyfFactorIcon": false,
+			"modifyfFactorTitle": '',
 			"modifynDeviceAddrsStar": true,
 			"modifynDeviceAddrsIcon": false,
 			"modifynDeviceAddrsTitle": '',
 			"modifyfFactorsStar": true,
 			"modifyfFactorsIcon": false,
 			"modifyfFactorsTitle": '',
-			"modifyButton":true,
-			"uploadButton":true,
+			"modifyButton": true,
+			"uploadButton": true,
+			"colResizableBooleans": true,
 			"szRegDataTypeDisabled": false,
-			"szRegDataTypesDisabled":false,
-			"szRegDataTypeCheckDisabled":false,
-			"fFactorCheckDisabled":false,
-			"modifyListsButton":false
+			"szRegDataTypesDisabled": false,
+			"szRegDataTypeCheckDisabled": false,
+			"fFactorCheckDisabled": false,
+			"modifyListsButton": false
 		}
 	},
 	methods: {
-		updateDetail: function() { //在父组件里调用此方法 接受表格数据并生成表格
+		updateDetail: function() { //在父组件里调用此方法 生成表格
 			var that = this;
 			$(function() {
 				//1.初始化Table
@@ -78,9 +78,7 @@ Vue.component('detail', {
 				oTableInit.Init = function() {
 					$('#table').bootstrapTable('destroy');
 					$('#table').bootstrapTable({
-						method: 'post',
-						contentType: "application/x-www-form-urlencoded", 
-						url: "/dataCollect/ModbusTcp/api/modbusTcpVariant", //要请求数据的文件路径
+						url: "data/data2.json", //要请求数据的文件路径
 						toolbar: '#toolbar', //工具按钮用哪个容器
 						striped: true, //是否显示行间隔色
 						cache: false, //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
@@ -88,14 +86,14 @@ Vue.component('detail', {
 						sortable: true, //是否启用排序
 						sortOrder: "asc", //排序方式
 						queryParams: oTableInit.queryParams, //传递参数（*）
-						sidePagination: "server", //分页方式：client客户端分页，server服务端分页（*）
+						sidePagination: "client", //分页方式：client客户端分页，server服务端分页（*）
 						pageNumber: 1, //初始化加载第一页，默认第一页
 						pageSize: 20, //每页的记录行数（*）
-						pageList: [10,20,30,40,50,100,150,200], //可供选择的每页的行数（*）
+						pageList: [5, 10, 20, 25, 50, 100], //可供选择的每页的行数（*）
 						strictSearch: true,
 						showColumns: true, //是否显示所有的列
 						showRefresh: false, //是否显示刷新按钮
-						showToggle:true,
+						showToggle: true,
 						minimumCountColumns: 2, //最少允许的列数
 						clickToSelect: false, //是否启用点击选中行
 						uniqueId: "deviceVariantId", //每一行的唯一标识，一般为主键列
@@ -105,121 +103,125 @@ Vue.component('detail', {
 						exportTypes: ['excel'], //导出文件类型  
 						Icons: 'glyphicon-export',
 						columns: [{
-							checkbox: true
-						},
-						{
-							field: 'deviceVariantId',
-							visible: false
-						},
-						{
-							field: 'deviceVariantName',
-							title: '设备名称',
-						},
-						{
-							field: 'nDeviceAddr',
-							title: '设备地址'
-						},
-						{
-							field: 'nStartReg',
-							title: '寄存器地址'
-						},
-						{
-							field: 'nRegType',
-							title: '寄存器类型',
-							formatter: function(value, row, index) {
-								if(value == 1) {
-									return "线圈状态"
+								checkbox: true
+							},
+							{
+								field: 'deviceVariantId',
+								visible: false
+							},
+							{
+								field: 'deviceVariantName',
+								title: '设备名称',
+							},
+							{
+								field: 'nDeviceAddr',
+								title: '设备地址'
+							},
+							{
+								field: 'nStartReg',
+								title: '寄存器地址'
+							},
+							{
+								field: 'nRegType',
+								title: '寄存器类型',
+								formatter: function(value, row, index) {
+									if(value == 1) {
+										return "线圈状态"
+									}
+									if(value == 2) {
+										return "输入状态"
+									}
+									if(value == 3) {
+										return "保持寄存器"
+									}
+									if(value == 4) {
+										return "输入寄存器"
+									}
 								}
-								if(value == 2) {
-									return "输入状态"
+							},
+							{
+								field: 'szRegDataType',
+								title: '数据类型',
+								formatter: function(value, row, index) {
+									switch(value) {
+										case 'int16':
+											return '16位整型';
+											break;
+										case 'uint16':
+											return '16位无符号整型';
+											break;
+										case 'int32':
+											return '32位整型';
+											break;
+										case 'uint32':
+											return '32位无符号整型';
+											break;
+										case 'int64':
+											return '64位整型';
+											break;
+										case 'uint64':
+											return '64位无符号整型';
+											break;
+										case 'float':
+											return '单精度浮点型';
+											break;
+										case 'double':
+											return '双精度浮点型';
+											break;
+										case 'bool':
+											return '布尔类型';
+											break;
+									}
 								}
-								if(value == 3) {
-									return "保持寄存器"
+							},
+							{
+								field: 'fFactor',
+								title: '系数因子'
+							},
+							{
+								field: 'bMergeRead',
+								title: '连续读取',
+								visible: false,
+								formatter: function(value, row, index) {
+									if(value == 1) {
+										return "是"
+									}
+									if(value == 0) {
+										return "否"
+									}
 								}
-								if(value == 4) {
-									return "输入寄存器"
+							},
+							{
+								field: 'bMergeWrite',
+								title: '连续写入',
+								visible: false,
+								formatter: function(value, row, index) {
+									if(value == 1) {
+										return "是"
+									}
+									if(value == 0) {
+										return "否"
+									}
 								}
 							}
-						},
-						{
-							field: 'szRegDataType',
-							title: '数据类型',
-							formatter: function(value, row, index) {
-								switch(value) {
-									case 'int16':
-									return '16位整型';
-									break;
-									case 'uint16':
-									return '16位无符号整型';
-									break;
-									case 'int32':
-									return '32位整型';
-									break;
-									case 'uint32':
-									return '32位无符号整型';
-									break;
-									case 'int64':
-									return '64位整型';
-									break;
-									case 'uint64':
-									return '64位无符号整型';
-									break;
-									case 'float':
-									return '单精度浮点型';
-									break;
-									case 'double':
-									return '双精度浮点型';
-									break;
-									case 'bool':
-									return '布尔类型';
-									break;
-								}
-							}
-						},
-						{
-							field: 'fFactor',
-							title: '系数因子'
-						},
-						{
-							field: 'bMergeRead',
-							title: '连续读取',
-							visible: false,
-							formatter: function(value, row, index) {
-								if(value == 1) {
-									return "是"
-								}
-								if(value == 0) {
-									return "否"
-								}
-							}
-						},
-						{
-							field: 'bMergeWrite',
-							title: '连续写入',
-							visible: false,
-							formatter: function(value, row, index) {
-								if(value == 1) {
-									return "是"
-								}
-								if(value == 0) {
-									return "否"
-								}
-							}
-						}
 						],
+						//						onLoadSuccess: function() { //加载成功时执行
+						//							$("table").colResizable();
+						//						},
 						onDblClickRow: function(_element, _event) {
-							that.dblnowIndex  = $('#table').find(_event[0]).data('index');
+							that.dblnowIndex = $('#table').find(_event[0]).data('index');
 							//获取到双击的index
 							dblclickTable(_element, _event);
-						},
+						}
 					});
 				};
+
 				//得到查询的参数
 				oTableInit.queryParams = function(params) {
 					var temp = { //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
 						limit: params.limit, //页面大小
 						offset: params.offset, //页码
-						nId:that.propschoosenid,//nId是采集单元的ID
+						nId: that.propschoosenid, //nId是采集单元的ID
 						departmentname: $("#txt_search_departmentname").val(),
 						statu: $("#txt_search_statu").val()
 					};
@@ -235,13 +237,14 @@ Vue.component('detail', {
 				};
 				return oInit;
 			};
+
 			function dblclickTable(_element, _event) {
 				$('#modifyTableList').modal('show');
 				that.modifyData = {
 					"deviceVariantId": _element.deviceVariantId,
 					"deviceVariantName": _element.deviceVariantName,
-					"collectId": _element.collectId,
 					"nStartReg": _element.nStartReg,
+					"nRegCount": _element.nRegCount,
 					"nRegType": _element.nRegType,
 					"nDeviceAddr": _element.nDeviceAddr,
 					"szRegDataType": _element.szRegDataType,
@@ -262,6 +265,7 @@ Vue.component('detail', {
 					"deviceVariantId": selectedData[0].deviceVariantId,
 					"deviceVariantName": selectedData[0].deviceVariantName,
 					"nStartReg": selectedData[0].nStartReg,
+					"nRegCount": selectedData[0].nRegCount,
 					"nRegType": selectedData[0].nRegType,
 					"nDeviceAddr": selectedData[0].nDeviceAddr,
 					"szRegDataType": selectedData[0].szRegDataType,
@@ -275,15 +279,15 @@ Vue.component('detail', {
 			} else
 			if(selectedData.length > 1) { //选择多项进行编辑
 				this.nDeviceAddrCheck = false;
-				this.nRegTypeCheck = false;//变量初始化
-				this.fFactorCheck = false;//下同
+				this.nRegTypeCheck = false;
+				this.fFactorCheck = false;
 				this.szRegDataTypeCheck = false;
 				this.bMergeCheck = false;
 				this.modifyLists = {
 					"nDeviceAddr": "",
-					"nRegType": "",
+					"nRegType": "1",
 					"fFactor": "",
-					"szRegDataType": "int",
+					"szRegDataType": "bool",
 					"bMergeRead": "1",
 					"bMergeWrite": "1"
 				}
@@ -316,16 +320,20 @@ Vue.component('detail', {
 		},
 		changenRegTypes: function() { //多项编辑模态框，改变寄存器类型 如果选择线圈 数据类型就为bool  并且不能选择其他项
 			//如果选1或者2，数据类型下拉框选中并且定死  数据类型checkbox选中并且定死
-			if(this.modifyLists.nRegType == '1'&& this.nRegTypeCheck == true) {
+			if(this.modifyLists.nRegType == '1' && this.nRegTypeCheck == true) {
 				this.modifyLists.fFactor = '1';
 				this.fFactorsDisabled = true;
 				this.fFactorCheck = true;
 				this.fFactorCheckDisabled = true;
-			}else{
+			} else {
 				this.fFactorsDisabled = false;
 				this.fFactorCheckDisabled = false;
 				this.fFactorCheck = false;
 			}
+			//			if(this.modifyLists.nRegType == '2' || this.modifyLists.nRegType == '3' || this.modifyLists.nRegType == '4') {
+			//				this.fFactorDisabled = false;
+			//				this.fFactorCheckDisabled = false;
+			//			}
 			if((this.modifyLists.nRegType == '1' || this.modifyLists.nRegType == '2') && this.nRegTypeCheck == true) {
 				this.modifyLists.szRegDataType = 'bool';
 				this.szRegDataTypesDisabled = true;
@@ -349,24 +357,17 @@ Vue.component('detail', {
 			}
 		},
 		modify: function() {
-			$(".undfan-loading").fadeIn();
 			if($('#table').bootstrapTable('getSelections').length == 0) {
 				this.nowIndex = this.dblnowIndex;
 			} else {
 				this.nowIndex = $('#table').bootstrapTable('getSelections')[0].index;
 			}
-			this.$http.put('/dataCollect/ModbusTcp/api/modbusTcpVariant', [this.modifyData])
-			.then(function(res) {
-				$(".undfan-loading").fadeOut();
-				$('#table').bootstrapTable('refresh');
-			}, function(res) {
-				$(".undfan-loading").fadeOut();
-				toastr.warning('编辑文件时发生错误。', res.status + '错误', {
-					closeButton: true,
-					"showDuration": "300",
-					"timeOut": "3000"
-				})
-			})
+			var that = this;
+			console.log(that.modifyData)
+			$('#table').bootstrapTable('updateRow', {
+				index: that.nowIndex,
+				row: that.modifyData
+			});
 		},
 		modifyList: function() {
 			var modifyArray = []; //所有数据合集的list
@@ -376,7 +377,7 @@ Vue.component('detail', {
 				aSelectedData = {
 					"nDeviceAddr": this.modifyLists.nDeviceAddr,
 					"deviceVariantId": selectedDataArray[i].deviceVariantId,
-					"nRegType": this.modifyLists.nRegType, //功能码
+					"nRegType": this.modifyLists.nRegType, //寄存器类型
 					"szRegDataType": this.modifyLists.szRegDataType, //数据类型
 					"bMergeRead": this.modifyLists.bMergeRead, //是否连续
 					"bMergeWrite": this.modifyLists.bMergeWrite, //是否连续
@@ -385,7 +386,7 @@ Vue.component('detail', {
 				if(this.nDeviceAddrCheck == false) {
 					delete aSelectedData.nDeviceAddr;
 				}
-				if(this.nRegTypeCheck == false) {//如果没有checkbox  就删除对象里的对应属性
+				if(this.nRegTypeCheck == false) {
 					delete aSelectedData.nRegType;
 				}
 				if(this.szRegDataTypeCheck == false) {
@@ -402,29 +403,53 @@ Vue.component('detail', {
 				}
 				modifyArray.push(aSelectedData);
 			}
-			$(".undfan-loading").fadeIn();
-			this.$http.put('/dataCollect/ModbusTcp/api/modbusTcpVariant', modifyArray)
-			.then(function(res) {
-				$(".undfan-loading").fadeOut();
-				$('#table').bootstrapTable('refresh');
-			}, function(res) {
-				$(".undfan-loading").fadeOut();
-				toastr.warning('编辑文件时发生错误。', res.status + '错误', {
-					closeButton: true,
-					"showDuration": "300",
-					"timeOut": "3000"
-				})
-			})
+			//成功
+			for(var i = 0; i < selectedDataArray.length; i++) {
+				this.modifyData = {
+					"deviceVariantName": selectedDataArray[i].deviceVariantName,
+					"nStartReg": selectedDataArray[i].nStartReg,
+					"nRegCount": selectedDataArray[i].nRegCount,
+					"nRegType": this.modifyLists.nRegType, //功能码
+					"nDeviceAddr": this.modifyLists.nDeviceAddr,
+					"szRegDataType": this.modifyLists.szRegDataType, //数据类型
+					"bMergeRead": this.modifyLists.bMergeRead, //是否连续
+					"bMergeWrite": this.modifyLists.bMergeWrite, //是否连续
+					"fFactor": this.modifyLists.fFactor //系数
+				}
+				if(this.nDeviceAddrCheck == false) {
+					this.modifyData.nDeviceAddr = selectedDataArray[i].nDeviceAddr;
+				}
+				if(this.nRegTypeCheck == false) {
+					this.modifyData.nRegType = selectedDataArray[i].nRegType;
+				}
+				if(this.szRegDataTypeCheck == false) {
+					this.modifyData.szRegDataType = selectedDataArray[i].szRegDataType;
+				}
+				if(this.bMergeReadCheck == false) {
+					this.modifyData.bMergeRead = selectedDataArray[i].bMergeRead;
+				}
+				if(this.bMergeWriteCheck == false) {
+					this.modifyData.bMergeWrite = selectedDataArray[i].bMergeWrite;
+				}
+				if(this.fFactorCheck == false) {
+					this.modifyData.fFactor = selectedDataArray[i].fFactor;
+				}
+				$('#table').bootstrapTable('updateRow', {
+					index: selectedDataArray[i].index,
+					row: this.modifyData
+				});
+			}
+			//\/成功			
 		},
-		chooseFile:function(){
+		chooseFile: function() {
 			$('#chooseFileUpload').click();
 		},
-		changeFile:function(){
-			var valueName = $('#chooseFileUpload').val().split("\\")[$('#chooseFileUpload').val().split("\\").length-1]//获取到文件名
-			if(!valueName==""){
+		changeFile: function() {
+			var valueName = $('#chooseFileUpload').val().split("\\")[$('#chooseFileUpload').val().split("\\").length - 1] //获取到文件名
+			if(!valueName == "") {
 				this.fileName = valueName;
 				this.uploadButton = false;
-			}else{
+			} else {
 				this.fileName = "选择文件上传";
 				this.uploadButton = true;
 			}
@@ -433,43 +458,43 @@ Vue.component('detail', {
 			$(".undfan-loading").fadeIn();
 			var that = this;
 			$('#upload').ajaxForm({
-				// dataType: 'json',
-				success: function() {
+				dataType: 'json',
+				resetForm:true,
+				clearForm:true,
+				success: function(res) {
 					$(".undfan-loading").fadeOut();
 					$("#table").bootstrapTable('refreshOptions', {
-						url: "/dataCollect/ModbusTcp/api/modbusTcpVariant",
+						data: res,
 						pageNumber: 1,
 						pageSize: 20,
 					});
-					toastr.success('文件上传成功',{
+					toastr.success('上传成功', {
 						closeButton: true,
 						"showDuration": "300",
 						"timeOut": "3000"
 					})
+					 $("#toolbar").empty();//摧毁form
 					that.fileName = "选择文件上传";
 					that.uploadButton = true;
 					return false;
 				},
 				error: function(res) {
+					$('#chooseFileUpload').val('');
+					that.fileName = "选择文件上传";
+					that.uploadButton = true;
 					$(".undfan-loading").fadeOut();
-					
-					if(undefined == JSON.parse(res.responseText).errMsg || "" == JSON.parse(res.responseText).errMsg)
-					{
-						JSON.parse(res.responseText).errMsg = "上传文件出错";
-					}
-					toastr.warning(JSON.parse(res.responseText).errMsg, '错误', {
+					return false;
+					toastr.warning('添加文件时发生错误。', res.status + '错误', {
 						closeButton: true,
 						"showDuration": "300",
 						"timeOut": "3000"
-					});
-					return false;
+					})
 				}
 			});
 		},
-		downloadFile:function(){
-			window.location.href = '/dataCollect/ModbusTcp/api/exportVariants?collectId='+this.propschoosenid;
+		downloadFile: function() {
+			window.location.href = '/dataCollect/ModbusTcp/api/exportVariants?collectId=' + this.propschoosenid;
 		},
-		"nStartReg": "",
 		modifynStartRegKeyup: function() {
 			var pattName = /^\d+$/;
 			if(!pattName.test(this.modifyData.nStartReg)) {
@@ -558,6 +583,7 @@ Vue.component('detail', {
 					this.modifynDeviceAddrsTitle = '请输入非负整数';
 					this.modifynDeviceAddrsIcon = true;
 					this.modifynDeviceAddrsStar = false;
+					//					this.modifyListsButton = true;
 				} else {
 					this.modifynDeviceAddrsIcon = false;
 					this.modifynDeviceAddrsStar = true;
@@ -566,11 +592,17 @@ Vue.component('detail', {
 					this.modifynDeviceAddrsTitle = '该项不能为空';
 					this.modifynDeviceAddrsIcon = true;
 					this.modifynDeviceAddrsStar = false;
+					//					this.modifyListsButton = true;
 				}
 			} else {
 				this.modifynDeviceAddrsIcon = false;
 				this.modifynDeviceAddrsStar = true;
 			}
+			//			if(this.modifynDeviceAddrsIcon == true||this.modifyfFactorsIcon == true){
+			//				this.modifyListsButton = true;
+			//			}else{
+			//				this.modifyListsButton = false;
+			//			}
 		},
 		modifynDeviceAddrsKeyup: function() {
 			var pattName = /^\d+$/;
@@ -582,6 +614,11 @@ Vue.component('detail', {
 				this.modifynDeviceAddrsIcon = false;
 				this.modifynDeviceAddrsStar = true;
 			}
+			//			if(this.modifynDeviceAddrsIcon == true||this.modifyfFactorsIcon == true){
+			//				this.modifyListsButton = true;
+			//			}else{
+			//				this.modifyListsButton = false;
+			//			}
 		},
 		modifynDeviceAddrsBlur: function() {
 			var pattName = /^\d+$/;
@@ -598,6 +635,11 @@ Vue.component('detail', {
 				this.modifynDeviceAddrsIcon = true;
 				this.modifynDeviceAddrsStar = false;
 			}
+			//			if(this.modifynDeviceAddrsIcon == true||this.modifyfFactorsIcon == true){
+			//				this.modifyListsButton = true;
+			//			}else{
+			//				this.modifyListsButton = false;
+			//			}
 		},
 		checkmodifyfFactors: function() {
 			if(this.fFactorCheck == true) {
@@ -621,6 +663,11 @@ Vue.component('detail', {
 				this.modifyfFactorsIcon = false;
 				this.modifyfFactorsStar = true;
 			}
+			//			if(this.modifynDeviceAddrsIcon == true||this.modifyfFactorsIcon == true){
+			//				this.modifyListsButton = true;
+			//			}else{
+			//				this.modifyListsButton = false;
+			//			}
 		},
 		modifyfFactorsKeyup: function() {
 			var pattName = /^(-?\d+)(\.\d+)?$/;
@@ -632,6 +679,11 @@ Vue.component('detail', {
 				this.modifyfFactorsIcon = false;
 				this.modifyfFactorsStar = true;
 			}
+			//			if(this.modifynDeviceAddrsIcon == true||this.modifyfFactorsIcon == true){
+			//				this.modifyListsButton = true;
+			//			}else{
+			//				this.modifyListsButton = false;
+			//			}
 		},
 		modifyfFactorsBlur: function() {
 			var pattName = /^(-?\d+)(\.\d+)?$/;
@@ -648,15 +700,20 @@ Vue.component('detail', {
 				this.modifyfFactorsIcon = true;
 				this.modifyfFactorsStar = false;
 			}
+			//			if(this.modifynDeviceAddrsIcon == true||this.modifyfFactorsIcon == true){
+			//				this.modifyListsButton = true;
+			//			}else{
+			//				this.modifyListsButton = false;
+			//			}
 		}
 	},
 	beforeUpdate: function() {
 		if(this.modifynStartRegIcon == true ||
 			this.modifynDeviceAddrIcon == true ||
 			this.modifyfFactorIcon == true ||
-			this.modifyData.nStartReg === '' ||
-			this.modifyData.nDeviceAddr === '' ||
-			this.modifyData.fFactor === ''
+			this.modifyData.nStartReg == '' ||
+			this.modifyData.nDeviceAddr == '' ||
+			this.modifyData.fFactor == ''
 		) {
 			this.modifyButton = true
 		} else {

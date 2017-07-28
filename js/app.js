@@ -2,19 +2,20 @@ var app = new Vue({
 	el: '#app',
 	data: {
 		collectList: [], //采集服务数据
+		//		tableList: [],
 		homepageType: true, //主页展示
 		detailType: false, //列表页隐藏
 		chooseIndex: 0, //点击查看采集单元详情的 index
-		chooseNId: '233', //点击查看采集单元详情的nId
+		chooseNId: '2222', //点击查看采集单元详情的nId
 		chooseSzName: '',
-		deleteIndex: 0 ,
-		deleteNId:'233',
-		deleteszName:'',
+		deleteIndex: 0,
+		deleteNId: '233',
+		deleteszName: '',
 		modifyData: {
 			"nId": "",
 			"szName": "",
+			"nCmdTimeout": "",
 			"szServerIP": "",
-			"nCmdTimeout":"",
 			"nServerPort": "",
 			"nCollectInterval": "",
 			"nCmdInterval": "",
@@ -23,64 +24,65 @@ var app = new Vue({
 		addData: {
 			"nId": "",
 			"szName": "",
+			"nCmdTimeout": "",
 			"szServerIP": "",
-			"nCmdTimeout":"",
 			"nServerPort": "",
 			"nCollectInterval": "",
 			"nCmdInterval": "",
 			"szRemark": ""
 		},
-		addButton:true,
-		modifyButton:true,
+		addButton: true,
+		modifyButton: true,
 		appModifyIndex: 88,
-		addszNameStar:true,//添加名字 星星是否显示
+		addszNameStar: true, //添加名字 星星是否显示
 		addszNameTitle: '', //添加名字 文字提示
 		addszNameIcon: false, //添加名字 警告图标
-		addszServerIPStar:true,
+		addszServerIPStar: true,
 		addszServerIPTitle: '', //添加 IP 文字提示
 		addszServerIPIcon: false, //添加IP 警告图片
-		addnServerPortStar:true,
+		addnServerPortStar: true,
 		addnServerPortTitle: '', //添加端口 文字提示
 		addnServerPortIcon: false, //添加端口 警告图标
-		addnCollectIntervalStar:true,
-		addnCollectIntervalTitle: '', //添加采集周期 文字提示
-		addnCollectIntervalIcon: false, //添加采集周期  警告图标
-		addnCmdIntervalStar:true,
-		addnCmdIntervalTitle: '', //添加命令间隔 文字提示
-		addnCmdIntervalIcon: false, //添加命令间隔 警告图标
 		addnCmdTimeoutStar: true,
 		addnCmdTimeoutTitle: '',
 		addnCmdTimeoutIcon: false,
-		addszRemarkIcon:false,
-		addszRemarkTitle:'',
-		modifyszNameStar:true,
-		modifyszNameTitle: '', 
-		modifyszNameIcon: false, 
-		modifyszServerIPStar:true,
-		modifyszServerIPTitle: '', 
-		modifyszServerIPIcon: false, 
+		addnCollectIntervalStar: true,
+		addnCollectIntervalTitle: '', //添加采集周期 文字提示
+		addnCollectIntervalIcon: false, //添加采集周期  警告图标
+		addnCmdIntervalStar: true,
+		addnCmdIntervalTitle: '',
+		addnCmdIntervalIcon: false,
+		addszRemarkIcon: false,
+		addszRemarkTitle: '',
+		modifyszNameStar: true,
+		modifyszNameTitle: '',
+		modifyszNameIcon: false,
 		modifynCmdTimeoutStar: true,
 		modifynCmdTimeoutTitle: '',
 		modifynCmdTimeoutIcon: false,
-		modifynServerPortStar:true,
-		modifynServerPortTitle: '', 
-		modifynServerPortIcon: false, 
-		modifynCollectIntervalStar:true,
-		modifynCollectIntervalTitle: '', 
-		modifynCollectIntervalIcon: false, 
-		modifynCmdIntervalStar:true,
-		modifynCmdIntervalTitle: '', 
+		modifyszServerIPStar: true,
+		modifyszServerIPTitle: '',
+		modifyszServerIPIcon: false,
+		modifynServerPortStar: true,
+		modifynServerPortTitle: '',
+		modifynServerPortIcon: false,
+		modifynCollectIntervalStar: true,
+		modifynCollectIntervalTitle: '',
+		modifynCollectIntervalIcon: false,
+		modifynCmdIntervalStar: true,
+		modifynCmdIntervalTitle: '',
 		modifynCmdIntervalIcon: false,
-		modifyszRemarkTitle:'',
-		modifyszRemarkIcon:false
+		modifyszRemarkTitle: '',
+		modifyszRemarkIcon: false
 	},
 	created: function() {
 		$(".undfan-loading").fadeIn();
-		this.$http.get('/dataCollect/ModbusTcp/api/collectUnit').then(function(res) {
+		this.$http.get('data/data1.json').then(function(res) {
 			$(".undfan-loading").fadeOut();
 			this.collectList = res.body; //接受的对象
 		}, function(res) {
 			$(".undfan-loading").fadeOut();
+			console.log("xixixi")
 			toastr.warning('加载文件时发生错误。', res.status + '错误', {
 				closeButton: true,
 				"showDuration": "300",
@@ -89,12 +91,12 @@ var app = new Vue({
 		});
 	},
 	methods: {
-		initData: function() {  //每次点击添加采集单元的时候清空里面的数据
+		initData: function() {
 			this.addData = {
 				"nId": "",
 				"szName": "",
+				"nCmdTimeout": "",
 				"szServerIP": "",
-				"nCmdTimeout":"",
 				"nServerPort": "",
 				"nCollectInterval": "",
 				"nCmdInterval": "",
@@ -104,10 +106,10 @@ var app = new Vue({
 		},
 		getChooseData: function(index) { //点击豆腐块子组件的查看，接受index值，切换到具体一项的采集单元列表页  与下面的showDetail方法 内容一致
 			var navLis = document.getElementsByClassName('navlis');
-			for(var i = 0;i<navLis.length;i++){
-				navLis[i].classList.remove('libgc');
+			for(var i = 0; i < navLis.length; i++) {
+				navLis[i].getElementsByTagName('a')[0].classList.remove('libgc');
 			}
-			navLis[index].classList.add('libgc');
+			navLis[index].getElementsByTagName('a')[0].classList.add('libgc');
 			this.chooseIndex = index;
 			this.chooseSzName = this.collectList[index].szName;
 			this.chooseNId = this.collectList[index].nId; //获取到点击的nId
@@ -116,35 +118,23 @@ var app = new Vue({
 			this.$children[1].updateDetail();
 		},
 		addModalData: function() { //点击添加模态框的确认按钮
-			$(".undfan-loading").fadeIn();
-			this.$http.post('/dataCollect/ModbusTcp/api/collectUnit', this.addData)
-			.then(function(res) {
-				$(".undfan-loading").fadeOut();
-				this.addData.nId = res.body.id;
-				this.collectList.push(this.addData);
-				this.addData = {
-					"nId": "",
-					"szName": "",
-					"szServerIP": "",
-					"nCmdTimeout":"",
-					"nServerPort": "",
-					"nCollectInterval": "",
-					"nCmdInterval": "",
-					"szRemark": ""
-				}
-			}, function(res) {
-				$(".undfan-loading").fadeOut();
-				toastr.warning('添加文件时发生错误。', res.status + '错误', {
-					closeButton: true,
-					"showDuration": "300",
-					"timeOut": "3000"
-				})
-			})
+			this.collectList.push(this.addData)
+			this.addData = {
+				"nId": "",
+				"szName": "",
+				"szServerIP": "",
+				"nCmdTimeout": "",
+				"nServerPort": "",
+				"nCollectInterval": "",
+				"nCmdInterval": "",
+				"szRemark": ""
+			}
+			$('#myModalAdd').modal('hide')
 		},
 		getModifyIndex: function(index) { //点击豆腐块上的编辑
 			this.appModifyIndex = index;
 			this.modifyData = {
-				"nId":this.collectList[this.appModifyIndex].nId,
+				"nId": this.collectList[this.appModifyIndex].nId,
 				"szName": this.collectList[this.appModifyIndex].szName,
 				"szServerIP": this.collectList[this.appModifyIndex].szServerIP,
 				"nCmdTimeout": this.collectList[this.appModifyIndex].nCmdTimeout,
@@ -153,80 +143,72 @@ var app = new Vue({
 				"nCmdInterval": this.collectList[this.appModifyIndex].nCmdInterval,
 				"szRemark": this.collectList[this.appModifyIndex].szRemark
 			} //把当前的值展现在模态框里
+
 		},
 		modifyModalData: function() { //点击修改模态框的确认修改
-			$(".undfan-loading").fadeIn();
-			this.$http.put('/dataCollect/ModbusTcp/api/collectUnit',{
-				"nId":this.collectList[this.appModifyIndex].nId,
-				"szName": this.modifyData.szName,
-				"szServerIP": this.modifyData.szServerIP,
-				"nCmdTimeout": this.modifyData.nCmdTimeout,
-				"nServerPort": this.modifyData.nServerPort,
-				"nCollectInterval": this.modifyData.nCollectInterval,
-				"nCmdInterval": this.modifyData.nCmdInterval,
-				"szRemark": this.modifyData.szRemark
-			}).then(function(res) {
-				$(".undfan-loading").fadeOut();
-				this.collectList.splice(this.appModifyIndex, 1, this.modifyData);
-			}, function(res) {
-				$(".undfan-loading").fadeOut();
-				toastr.warning('编辑文件时发生错误。', res.status + '错误', {
-					closeButton: true,
-					"showDuration": "300",
-					"timeOut": "3000"
-				})
-			})
+			//			{
+			//				"nId": this.collectList[this.appModifyIndex].nId,
+			//				"szServerIP": this.collectList[this.appModifyIndex].szServerIP,
+			//				"nServerPort": this.collectList[this.appModifyIndex].nServerPort,
+			//				"nCollectInterval": this.collectList[this.appModifyIndex].nCollectInterval,
+			//				"nCmdInterval": this.collectList[this.appModifyIndex].nCmdInterval,
+			//				"szReamrk": this.collectList[this.appModifyIndex].szReamrk
+			//			}
+			//              ↑↑↑ 发送的数据↑↑↑↑
+			this.collectList.splice(this.appModifyIndex, 1, this.modifyData);
 		},
-		getDeleteData:function(index){
+		getDeleteData: function(index) {
 			this.deleteIndex = index;
-			this.deleteszName=this.collectList[this.deleteIndex].szName;
+			this.deleteszName = this.collectList[this.deleteIndex].szName;
 		},
-		confirmDelete:function(){
-			var nIdArray=[];
+		confirmDelete: function() {
+			console.log(this.deleteIndex);
+			var nIdArray = [];
 			nIdArray.push(this.collectList[this.deleteIndex].nId);
-			this.$http.delete('/dataCollect/ModbusTcp/api/collectUnit', {body:nIdArray})
-			.then(function(res) {
-				this.collectList.splice(this.deleteIndex, 1)
-			}, function(res) {
-				var error = res.body.errCode;
-				if(error == (-6)) {
-					toastr.warning('该采集单元已被使用，无法删除。', '警告', {
-						closeButton: true,
-						"showDuration": "300",
-						"timeOut": "3000"
-					});
-				} else {
-					toastr.warning('删除文件时发生错误。', res.status + '错误', {
-						closeButton: true,
-						"showDuration": "300",
-						"timeOut": "3000"
-					})
-				}
-			})
+			console.log(nIdArray)
+			this.collectList.splice(this.deleteIndex, 1)
 			$('#deleteModal').modal('hide')
 		},
 		showDetail: function(index) { //点击左侧采集单元导航栏，切换到具体一项的采集单元列表页
 			var navLis = document.getElementsByClassName('navlis');
-			for(var i = 0;i<navLis.length;i++){
-				navLis[i].classList.remove('libgc');
+			for(var i = 0; i < navLis.length; i++) {
+				navLis[i].getElementsByTagName('a')[0].classList.remove('libgc');
 			}
-			navLis[index].classList.add('libgc');
+			navLis[index].getElementsByTagName('a')[0].classList.add('libgc');
 			this.chooseIndex = index;
 			this.chooseSzName = this.collectList[index].szName;
 			this.chooseNId = this.collectList[index].nId; //获取到点击的nId  将NId传递给表格子组件
 			this.homepageType = false;
 			this.detailType = true;
+			//						this.$http.post('url', 'this.chooseNId')
+			//							.then(function(res) { //回传列表数据
+			//			
+			//							}, function(res) {
+			//								toastr.warning('添加文件时发生错误。', res.status + '错误', {
+			//								closeButton: true,
+			//								"showDuration": "300",
+			//								"timeOut": "3000"
+			//								})
+			//							});
+			//模拟
 			this.$children[1].updateDetail();
+			//			this.$http.get('./data/data2.json')
+			//				.then(function(res) {
+			//					this.tableList = res.body;
+			//					 //触发表格子组件的生成列表方法
+			//				}, function(res) {
+			//
+			//				})
 		},
 		showHomepage: function() {
 			var navLis = document.getElementsByClassName('navlis');
 			for(var i = 0; i < navLis.length; i++) {
-				navLis[i].classList.remove('libgc');
+				navLis[i].getElementsByTagName('a')[0].classList.remove('libgc');
 			}
 			this.homepageType = true;
 			this.detailType = false;
 		},
-				addszNameKeyup: function() {
+		addszNameKeyup: function() {
 			var pattName = /^.{0,64}$/;
 			if(!pattName.test(this.addData.szName)) {
 				this.addszNameTitle = '名称不能超过64个字符';
@@ -238,7 +220,7 @@ var app = new Vue({
 			}
 		},
 		addszNameBlur: function() {
-			var pattName = /^.{0,64}$/;
+						var pattName = /^.{0,64}$/;
 			if(!pattName.test(this.addData.szName)) {
 				this.addszNameTitle = '名称不能超过64个字符';
 				this.addszNameIcon = true;
@@ -292,7 +274,7 @@ var app = new Vue({
 			}
 		},
 		addnServerPortBlur: function() {
-			var pattName = /^\d+$/;
+						var pattName = /^\d+$/;
 			if(!pattName.test(this.addData.nServerPort)) {
 				this.addnServerPortTitle = '请输入非负整数';
 				this.addnServerPortIcon = true;
@@ -305,7 +287,7 @@ var app = new Vue({
 				this.addnServerPortTitle = '该项不能为空';
 				this.addnServerPortIcon = true;
 				this.addnServerPortStar = false;
-			}
+			} 
 		},
 		addnCollectIntervalKeyup: function() {
 			var pattName = /^\d+$/;
@@ -319,7 +301,7 @@ var app = new Vue({
 			}
 		},
 		addnCollectIntervalBlur: function() {
-			var pattName = /^\d+$/;
+						var pattName = /^\d+$/;
 			if(!pattName.test(this.addData.nCollectInterval)) {
 				this.addnCollectIntervalTitle = '请输入非负整数';
 				this.addnCollectIntervalIcon = true;
@@ -332,7 +314,7 @@ var app = new Vue({
 				this.addnCollectIntervalTitle = '该项不能为空';
 				this.addnCollectIntervalIcon = true;
 				this.addnCollectIntervalStar = false;
-			}
+			} 
 		},
 		addnCmdTimeoutKeyup: function() {
 			var pattName = /^\d+$/;
@@ -346,7 +328,7 @@ var app = new Vue({
 			}
 		},
 		addnCmdTimeoutBlur: function() {
-			var pattName = /^\d+$/;
+						var pattName = /^\d+$/;
 			if(!pattName.test(this.addData.nCmdTimeout)) {
 				this.addnCmdTimeoutTitle = '请输入非负整数';
 				this.addnCmdTimeoutIcon = true;
@@ -359,7 +341,7 @@ var app = new Vue({
 				this.addnCmdTimeoutTitle = '该项不能为空';
 				this.addnCmdTimeoutIcon = true;
 				this.addnCmdTimeoutStar = false;
-			}
+			} 
 		},
 		addnCmdIntervalKeyup: function() {
 			var pattName = /^\d+$/;
@@ -386,7 +368,7 @@ var app = new Vue({
 				this.addnCmdIntervalTitle = '该项不能为空';
 				this.addnCmdIntervalIcon = true;
 				this.addnCmdIntervalStar = false;
-			}
+			} 
 		},
 		addszRemarkKeyup: function() {
 			var pattName = /^.{0,255}$/;
@@ -409,7 +391,7 @@ var app = new Vue({
 			}
 		},
 		modifyszNameBlur: function() {
-			var pattName = /^.{0,64}$/;
+						var pattName = /^.{0,64}$/;
 			if(!pattName.test(this.modifyData.szName)) {
 				this.modifyszNameTitle = '名称不能超过64个字符';
 				this.modifyszNameIcon = true;
@@ -422,7 +404,7 @@ var app = new Vue({
 				this.modifyszNameTitle = '该项不能为空';
 				this.modifyszNameIcon = true;
 				this.modifyszNameStar = false;
-			}
+			} 
 		},
 		modifyszServerIPKeyup: function() {
 			var pattName = /^.{0,32}$/;
@@ -463,7 +445,7 @@ var app = new Vue({
 			}
 		},
 		modifynServerPortBlur: function() {
-			var pattName = /^\d+$/;
+						var pattName = /^\d+$/;
 			if(!pattName.test(this.modifyData.nServerPort)) {
 				this.modifynServerPortTitle = '请输入非负整数';
 				this.modifynServerPortIcon = true;
@@ -476,7 +458,7 @@ var app = new Vue({
 				this.modifynServerPortTitle = '该项不能为空';
 				this.modifynServerPortIcon = true;
 				this.modifynServerPortStar = false;
-			}
+			} 
 		},
 		modifynCollectIntervalKeyup: function() {
 			var pattName = /^\d+$/;
@@ -490,7 +472,7 @@ var app = new Vue({
 			}
 		},
 		modifynCollectIntervalBlur: function() {
-			var pattName = /^\d+$/;
+						var pattName = /^\d+$/;
 			if(!pattName.test(this.modifyData.nCollectInterval)) {
 				this.modifynCollectIntervalTitle = '请输入非负整数';
 				this.modifynCollectIntervalIcon = true;
@@ -503,7 +485,7 @@ var app = new Vue({
 				this.modifynCollectIntervalTitle = '该项不能为空';
 				this.modifynCollectIntervalIcon = true;
 				this.modifynCollectIntervalStar = false;
-			}
+			} 
 		},
 		modifynCmdIntervalKeyup: function() {
 			var pattName = /^\d+$/;
@@ -517,7 +499,7 @@ var app = new Vue({
 			}
 		},
 		modifynCmdIntervalBlur: function() {
-			var pattName = /^\d+$/;
+						var pattName = /^\d+$/;
 			if(!pattName.test(this.modifyData.nCmdInterval)) {
 				this.modifynCmdIntervalTitle = '请输入非负整数';
 				this.modifynCmdIntervalIcon = true;
@@ -544,7 +526,7 @@ var app = new Vue({
 			}
 		},
 		modifynCmdTimeoutBlur: function() {
-			var pattName = /^\d+$/;
+						var pattName = /^\d+$/;
 			if(!pattName.test(this.modifyData.nCmdTimeout)) {
 				this.modifynCmdTimeoutTitle = '请输入非负整数';
 				this.modifynCmdTimeoutIcon = true;
@@ -581,26 +563,26 @@ var app = new Vue({
 			this.addData.nServerPort === '' ||
 			this.addData.nCollectInterval === '' ||
 			this.addData.nCmdInterval === ''
-			) {
+		) {
 			this.addButton = true
-	} else {
-		this.addButton = false
-	};
-	if(this.modifyszNameIcon == true ||
-		this.modifyszServerIPIcon == true ||
-		this.modifynServerPortIcon == true ||
-		this.modifynCollectIntervalIcon == true ||
-		this.modifynCmdIntervalIcon == true ||
-		this.modifyszRemarkIcon == true ||
-		this.modifyData.szName === '' ||
-		this.modifyData.szServerIP === '' ||
-		this.modifyData.nServerPort === '' ||
-		this.modifyData.nCollectInterval === '' ||
-		this.modifyData.nCmdInterval === ''
-		){
-		this.modifyButton = true
-} else {
-	this.modifyButton = false
-};
-}
+		} else {
+			this.addButton = false
+		};
+		if(this.modifyszNameIcon === true ||
+			this.modifyszServerIPIcon === true ||
+			this.modifynServerPortIcon === true ||
+			this.modifynCollectIntervalIcon === true ||
+			this.modifynCmdIntervalIcon === true ||
+			this.modifyszRemarkIcon === true ||
+			this.modifyData.szName === '' ||
+			this.modifyData.szServerIP === '' ||
+			this.modifyData.nServerPort === '' ||
+			this.modifyData.nCollectInterval === '' ||
+			this.modifyData.nCmdInterval === ''
+		) {
+			this.modifyButton = true
+		} else {
+			this.modifyButton = false
+		};
+	}
 });

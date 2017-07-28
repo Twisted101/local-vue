@@ -20,7 +20,7 @@ Vue.component('homepage', {
 		showModifyModal: function(index) { //点击豆腐块上的修改，获取修改的index,并传递给父组件app
 			this.$emit('get-modify-data', index);
 		},
-		showDeleteModal: function(index) { //删除一项豆腐块
+		showDeleteModal: function(index) { //点击豆腐块上的删除，获取修改的index,并传递给父组件app
 			this.$emit('get-delete-data', index);
 		}
 	}
